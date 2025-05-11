@@ -19,6 +19,9 @@ const LoginPage = () => {
             })
         });
         console.log(response);
+        if(response.ok){
+            alert("User logged In Successfully!");
+        }
         const output = await response.json();
         console.log(output);
     }catch(error){

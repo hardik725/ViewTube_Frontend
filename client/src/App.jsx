@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-    <SignUp/>
+    <LoginPage/>
     </>
   )
 }

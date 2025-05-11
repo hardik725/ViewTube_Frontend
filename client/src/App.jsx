@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import LoginPage from './assets/UserPages/LoginPage';
-import SignUp from './assets/UserPages/SignUp';
+import LoginPage from './UserPages/LoginPage';
+import SignUp from './UserPages/SignUp';
 
 function App() {
 

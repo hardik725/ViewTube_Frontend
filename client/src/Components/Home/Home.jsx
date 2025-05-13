@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../AuthProvider/AuthProvider';
 import VideoBoxLayout from '../VideoBoxLayout/VideoBoxLayout';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const [username, setUsername] = useState('');

@@ -9,6 +9,7 @@ import Home from './Components/Home/Home'
 import { AuthProvider } from './Components/AuthProvider/AuthProvider'
 import Subscription from './Components/Subscription/Subscription'
 import UserProfile from './UserPages/UserProfile'
+import VideoPlayer from './Components/VideoPlayer/VideoPlayer'
 
 
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
           <Route path="" element={<Home/>}></Route>
           <Route path="subscription" element={<Subscription/>}></Route>
           <Route path="userProfile" element={<UserProfile/>}></Route>
+          <Route path="videoPlayer/:videoId" element={<VideoPlayer/>}></Route>
     </Route>
     </>
     

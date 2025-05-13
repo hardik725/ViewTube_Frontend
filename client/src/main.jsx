@@ -1,11 +1,42 @@
-import { StrictMode } from 'react'
+import { StrictMode, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
+import LoginPage from './UserPages/LoginPage'
+import SignUp from './UserPages/SignUp'
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
+import Layout from './Components/Layout/Layout'
+import Home from './Components/Home/Home'
+import { AuthProvider } from './Components/AuthProvider/AuthProvider'
+import Subscription from './Components/Subscription/Subscription'
+import UserProfile from './UserPages/UserProfile'
+
+
+
+const logout = () => {
+  localStorage.removeItem('user');
+}
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+    <Route path="/" element={<LoginPage/>}>
+    </Route>
+    <Route path="/signUp" element={<SignUp/>}></Route>
+    <Route path="/user" element={<Layout/>}>
+          <Route path="" element={<Home/>}></Route>
+          <Route path="subscription" element={<Subscription/>}></Route>
+          <Route path="userProfile" element={<UserProfile/>}></Route>
+    </Route>
+    </>
+    
+  )
+)
 
 createRoot(document.getElementById('root')).render(
   // this is not important as app can run without the strictmode also
   <StrictMode>
-    <App />
+    <AuthProvider>
+    <RouterProvider router={router}/>
+    </AuthProvider>
   </StrictMode>,
 )

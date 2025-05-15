@@ -21,7 +21,7 @@ const Layout = () => {
         <Navbar />
       </div>
 
-      <div className="flex">
+      <div className="flex bg-black">
         {/* Fixed Sidebar with dynamic top and height */}
         <div
           className="fixed left-0 w-64 z-40"
@@ -34,14 +34,15 @@ const Layout = () => {
         </div>
 
         {/* Main content with margin to avoid overlap */}
-        <div
-          className="ml-64 p-4 w-full bg-black h-[100vh]"
-          style={{
-            marginTop: `${navHeight}px`
-          }}
-        >
-          <Outlet />
-        </div>
+<div
+  className="ml-64 p-2 w-full bg-black min-h-screen"
+  style={{
+    marginTop: `${navHeight}px`,
+  }}
+>
+  <Outlet />
+</div>
+
       </div>
     </>
   );

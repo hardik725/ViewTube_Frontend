@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { faThumbsUp, faEye, faCommentDots, faUsers, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const UserProfile = () => {
   const [avatar, setAvatar] = useState('');
@@ -11,6 +13,8 @@ const UserProfile = () => {
   const [newCoverImage, setNewCoverImage] = useState(null);
   const [avatarDrop, setAvatarDrop] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
+  const [subChannel, setSubChannel] = useState([]);
+  const [channelData, setChannelData] = useState({});
 
   const toggleAvatarForm = () => {
     setAvatarForm(prevValue => !prevValue);
@@ -21,6 +25,8 @@ const UserProfile = () => {
   const toggleAvatarDrop = () => {
     setAvatarDrop(prevValue => !prevValue);
   }
+
+  
 
 const updateAvatarForm = async (e) => {
   e.preventDefault();
@@ -43,6 +49,8 @@ const updateAvatarForm = async (e) => {
     alert("User avatar updated Successfully.");
     toggleAvatarForm();
     setNewAvatar(null);
+    window.dispatchEvent( new Event('userUpdated'));
+
   } else {
     alert("Failed to update avatar.");
   }
@@ -69,10 +77,29 @@ const updateCoverImageForm = async (e) => {
     alert("User coverImage updated Successfully.");
     toggleCoverImageForm();
     setNewCoverImage(null);
+    window.dispatchEvent( new Event('userUpdated'));
   } else {
     alert("Failed to update coverImage.");
   }
 };
+
+const getChannelData = async () => {
+  try{
+    const response = await fetch('/api/dashboard/data',{
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    if(response.ok){
+      const output = await response.json();
+      setChannelData(output.data[0]);
+      console.log("ChannelData:" ,output.data[0]);
+    }
+  }catch(error){
+    console.log(error);
+  }
+}
 
 
   useEffect(() => {
@@ -83,6 +110,13 @@ const updateCoverImageForm = async (e) => {
       setUsername(user.username || 'username');
       setFullName(user.fullname || 'Full Name');
     }
+
+    const subChannels = JSON.parse(localStorage.getItem('sub-channels'));
+    if(subChannels){
+      setSubChannel(subChannels || []);
+    }
+
+    getChannelData();
   }, []);
 
   return (
@@ -219,6 +253,72 @@ const updateCoverImageForm = async (e) => {
       <p className="text-sm text-gray-300">{username}</p>
     </div>
   </div>
+<div className="mt-12 px-6 text-white">
+  <h1 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-2">
+    Channel Statistics
+  </h1>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12">
+    {/* Likes */}
+    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
+      <FontAwesomeIcon icon={faThumbsUp} className="text-blue-500 text-3xl" />
+      <p className="text-xl font-semibold">{channelData.totalLikes}</p>
+    </div>
+
+    {/* Views */}
+    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
+      <FontAwesomeIcon icon={faEye} className="text-green-500 text-3xl" />
+      <p className="text-xl font-semibold">{channelData.totalViews}</p>
+    </div>
+
+    {/* Comments */}
+    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
+      <FontAwesomeIcon icon={faCommentDots} className="text-yellow-400 text-3xl" />
+      <p className="text-xl font-semibold">{channelData.totalComments}</p>
+    </div>
+
+    {/* Subscribers */}
+    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
+      <FontAwesomeIcon icon={faUsers} className="text-purple-500 text-3xl" />
+      <p className="text-xl font-semibold">{channelData.totalSubsribers}</p>
+    </div>
+
+    {/* Videos */}
+    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
+      <FontAwesomeIcon icon={faVideo} className="text-pink-500 text-3xl" />
+      <p className="text-xl font-semibold">{channelData.videoCount}</p>
+    </div>
+  </div>
+</div>
+
+<div className="mt-6 px-6">
+  <h1 className="text-2xl font-semibold text-white mb-4 border-b border-gray-600 pb-2">
+    Subscribed Channels
+  </h1>
+
+  {subChannel && subChannel.length > 0 ? (
+    <div className="flex flex-wrap gap-6">
+      {subChannel.map((sub, idx) => (
+        <div
+          key={idx}
+          className="w-40 p-4 bg-[#1f1f1f] hover:bg-[#2a2a2a] border border-gray-700 rounded-xl flex flex-col items-center shadow-md transition-all duration-200"
+        >
+          <img
+            src={sub.avatar}
+            alt={sub.fullname}
+            className="w-16 h-16 rounded-full object-cover border border-gray-500"
+          />
+          <span className="mt-2 text-white text-center text-sm font-medium truncate w-full">
+            {sub.fullname}
+          </span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-400 mt-4">You haven’t subscribed to any channels yet.</p>
+  )}
+</div>
+
 </div>
 
   );

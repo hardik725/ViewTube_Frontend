@@ -33,12 +33,24 @@ const Sidebar = () => {
         });
         const output = await response.json();
         console.log(output);
-        setSubChannel(output.data || []);
-        
-    }
-    useEffect(() => {
-        getSubChannels();
-    }, [])
+        const channels = output.data || [];
+        setSubChannel(channels);
+        localStorage.setItem('sub-channels', JSON.stringify(channels));
+      }
+useEffect(() => {
+  getSubChannels(); // initial fetch
+
+  const handleChannelUpdate = () => {
+    getSubChannels();
+  }
+
+  window.addEventListener('updatedSubChannels', handleChannelUpdate);
+
+  return () =>  {
+    window.removeEventListener('updatedSubChannels', handleChannelUpdate);
+  }
+}, []);
+
   return (
     <div className="w-64 bg-black text-white h-screen px-4 py-4 space-y-4 text-sm">
 

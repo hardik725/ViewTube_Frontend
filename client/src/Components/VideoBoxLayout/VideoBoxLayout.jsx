@@ -19,7 +19,7 @@ const VideoBoxLayout = ({ video }) => {
 
   return (
 <Link to={`/user/videoPlayer/${videoId}`} className="block">
-  <div className="w-96 text-white rounded-lg overflow-hidden hover:bg-gray-800 transition">
+  <div className="w-84 text-white rounded-lg overflow-hidden hover:bg-gray-800 transition">
     {/* Thumbnail */}
     <div className="relative">
       <img

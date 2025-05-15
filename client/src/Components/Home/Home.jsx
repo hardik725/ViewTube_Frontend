@@ -46,7 +46,7 @@ const Home = () => {
   return (
     <>
       <div>
-        <div className='flex flex-wrap gap-4 pl-10 bg-black'>
+        <div className='flex flex-wrap gap-2 pl-10 bg-black'>
         {videoFiles.map((video, index) => (
           <VideoBoxLayout key={index} video={video} />
         ))}

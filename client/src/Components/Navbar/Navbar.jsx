@@ -9,12 +9,26 @@ const Navbar = () => {
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const userDetail = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
       setUsername(user.username);
       setUserAvatar(user.avatar);
     }
+  }
+
+  useEffect(() => {
+    userDetail();
+    const handleUserUpdate = () => {
+    userDetail(); // refresh when event is triggered
+  };
+
+  window.addEventListener('userUpdated', handleUserUpdate);
+  // Cleanup
+  return () => {
+    window.removeEventListener('userUpdated', handleUserUpdate);
+  };
+
   }, []);
 
   return (

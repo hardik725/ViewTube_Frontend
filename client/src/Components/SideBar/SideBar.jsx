@@ -73,7 +73,9 @@ useEffect(() => {
         <SidebarItem icon={faHistory} label="History" active={state[2]}/>
         </Link>
         <SidebarItem icon={faList} label="Playlists" active={state[3]}/>
+        <Link to="/user/myVideos">
         <SidebarItem icon={faVideo} label="Your videos" active={state[4]}/>
+        </Link>
         <SidebarItem icon={faClock} label="Watch Later" active={state[5]}/>
         <SidebarItem icon={faThumbsUp} label="Liked videos" active={state[6]}/>
       </div>

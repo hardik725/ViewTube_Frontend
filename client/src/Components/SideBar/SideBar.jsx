@@ -69,7 +69,9 @@ useEffect(() => {
       {/* You Section */}
       <div className="space-y-2">
         <p className="text-gray-400">You</p>
+        <Link to="/user/history">
         <SidebarItem icon={faHistory} label="History" active={state[2]}/>
+        </Link>
         <SidebarItem icon={faList} label="Playlists" active={state[3]}/>
         <SidebarItem icon={faVideo} label="Your videos" active={state[4]}/>
         <SidebarItem icon={faClock} label="Watch Later" active={state[5]}/>

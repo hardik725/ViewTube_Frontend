@@ -16,6 +16,14 @@ const Navbar = () => {
       setUserAvatar(user.avatar);
     }
   }
+  
+  const setQuery = async (e) => {
+    e.preventDefault();
+    localStorage.setItem('query',JSON.stringify(searchText));
+    setSearchText('');
+
+    window.dispatchEvent(new Event('updatedQuery'));
+  }
 
   useEffect(() => {
     userDetail();
@@ -58,7 +66,7 @@ const Navbar = () => {
               <FontAwesomeIcon icon={faTimes} />
             </button>
           )}
-          <button className="ml-2 text-white p-2">
+          <button className="ml-2 text-white p-2" onClick={setQuery}>
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>

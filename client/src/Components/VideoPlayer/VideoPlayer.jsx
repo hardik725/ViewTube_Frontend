@@ -13,6 +13,7 @@ const VideoPlayer = () => {
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
   const [newComment, setNewComment] = useState('');
+  const [channelSubscribed, setChannelSubscribed] = useState(false);
 
 
   const clearComment = () => {
@@ -99,11 +100,30 @@ const toggleLike = async () => {
     }
   }, []);
 
+  const toggleSubscription = async () => {
+    try{
+      const response = await fetch(`/api/subscription/toggle/${video.owner_id}`,{
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if(response.ok){
+        setChannelSubscribed(prev => !prev);
+        window.dispatchEvent(new Event('updatedSubChannels'));
+      }
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     const getVideo = async () => {
       try {
         const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getVideoById/${videoId}`);
         const response2 = await fetch(`/api/video/incViewCound/${videoId}`);
+
         if (response.ok && response2.ok) {
           const output = await response.json();
           const data = output.data[0]; // assume this is a single video object
@@ -115,6 +135,12 @@ const toggleLike = async () => {
           setTotalLikes(data.likes || []);
           setTotalComments(updatedComments);
           setSelfLike((data.likes || []).some(like => like.owner === userId));
+        const subChannels = JSON.parse(localStorage.getItem('sub-channels'));
+        if(subChannels){
+          setChannelSubscribed((subChannels || []).some(channel => channel._id === data.owner_id));
+          console.log("Users Subscribed channel: ",subChannels);
+          console.log("Video Data is: ",data);
+        }          
         } else {
           console.error('Failed to fetch video.');
         }
@@ -147,14 +173,15 @@ const toggleLike = async () => {
   {/* Title & Description */}
   <div className="w-full max-w-4xl px-2 space-y-1 text-white">
     <h1 className="text-3xl font-bold">{video.title}</h1>
-    <p className="text-gray-300 text-base">{video.description}</p>
   </div>
 
   {/* Divider */}
   <div className="w-full max-w-4xl my-4 border-t border-gray-700" />
 
   {/* Channel Info */}
-  <div className="w-full max-w-4xl px-2 flex items-center gap-4 text-white">
+<div className="w-full max-w-4xl px-2 flex items-center justify-between text-white">
+  {/* Left side: avatar and user info */}
+  <div className="flex items-center gap-4">
     <img
       src={video.owner_avatar}
       alt="user_avatar"
@@ -166,10 +193,16 @@ const toggleLike = async () => {
     </div>
   </div>
 
-  {/* Divider */}
+  {/* Right side: subscribe button */}
+  <button className={`${!channelSubscribed ? "bg-gray-600" : "bg-red-600"} p-3 rounded-sm`} onClick={toggleSubscription}>
+    <p className="text-xl">{channelSubscribed ? "Subscribed" : "Subscribe"}</p>
+  </button>
+</div>
+
+
   <div className="w-full max-w-4xl my-4 border-t border-gray-700" />
 
-  {/* Video Stats */}
+    {/* Video Stats */}
   <div className="w-full max-w-4xl px-2 flex gap-10 items-center text-gray-400 text-lg">
     <div className="flex items-center gap-2">
       <span className="font-medium">{video.views}</span>
@@ -190,6 +223,16 @@ const toggleLike = async () => {
       <span className="text-sm text-gray-500">comments</span>
     </div>
   </div>
+
+  {/* Divider */}
+  <div className="w-full max-w-4xl my-4 border-t border-gray-700" />
+
+    <div className="w-full max-w-4xl px-2 space-y-1 text-white">
+    <p className="text-gray-300 text-base">{video.description}</p>
+  </div>
+
+
+
 </>
 
 <form className='mt-6 text-black flex flex-col items-center gap-2 w-full' onSubmit={postComment}>

@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import {
   faHome,
   faHistory,
-  faClock,
   faThumbsUp,
   faVideo,
   faList,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
-const paths = ['/user','/user/subscription','/user/history','/user/playlist','/user/myVideos','/user/watchHistory','/user/likedVideos'];
+const paths = ['/user','/user/subscription','/user/history','/user/playlist','/user/myVideos','/user/settings','/user/likedVideos'];
 import { Link } from 'react-router-dom';
+import { faGear } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
 
@@ -76,7 +76,9 @@ useEffect(() => {
         <Link to="/user/myVideos">
         <SidebarItem icon={faVideo} label="Your videos" active={state[4]}/>
         </Link>
-        <SidebarItem icon={faClock} label="Watch Later" active={state[5]}/>
+        <Link to="/user/settings">
+        <SidebarItem icon={faGear} label="Settings" active={state[5]}/>
+        </Link>
         <SidebarItem icon={faThumbsUp} label="Liked videos" active={state[6]}/>
       </div>
 

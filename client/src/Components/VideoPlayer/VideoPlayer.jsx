@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { faComment, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -188,7 +188,9 @@ const toggleLike = async () => {
       className="w-14 h-14 rounded-full object-cover"
     />
     <div className="flex flex-col justify-center">
+      <Link to={`/user/channelPage/${video.owner}`}>
       <p className="text-lg font-semibold">{video.owner}</p>
+      </Link>
       <p className="text-sm text-gray-400">{video.owner_fullname}</p>
     </div>
   </div>

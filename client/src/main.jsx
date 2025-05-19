@@ -12,12 +12,10 @@ import UserProfile from './UserPages/UserProfile'
 import VideoPlayer from './Components/VideoPlayer/VideoPlayer'
 import WatchHistory from './UserPages/WatchHistory'
 import UserVideos from './UserPages/UserVideos'
+import ChannelPage from './Components/ChannelPage/ChannelPage'
+import Settings from './UserPages/Settings'
 
 
-
-const logout = () => {
-  localStorage.removeItem('user');
-}
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +30,8 @@ const router = createBrowserRouter(
           <Route path="videoPlayer/:videoId" element={<VideoPlayer/>}></Route>
           <Route path="history" element={<WatchHistory/>}></Route>
           <Route path="myVideos" element={<UserVideos/>}></Route>
+          <Route path="channelPage/:channelName" element={<ChannelPage/>}></Route>
+          <Route path="settings" element={<Settings/>}></Route>
     </Route>
     </>
     

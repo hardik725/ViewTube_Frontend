@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-const api = import.meta.env.api;
 
 const LoginPage = () => {
     const [username,setUsername] = useState('');
@@ -11,7 +10,7 @@ const LoginPage = () => {
         e.preventDefault();
         // this ensures that the page is not reloaded when form is submitted
         try{
-        const response = await fetch(`${api}/users/login`,{
+        const response = await fetch(`/api/users/login`,{
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"

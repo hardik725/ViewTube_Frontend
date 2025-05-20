@@ -1,13 +1,12 @@
 // src/context/AuthContext.js
 import React, { createContext } from 'react';
-const api = import.meta.env.api;
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try{
-    const response = await fetch(`${api}/users/logout`,{
+    const response = await fetch(`/api/users/logout`,{
         method: 'POST',
         headers: {
             "content-Type": "application/json"

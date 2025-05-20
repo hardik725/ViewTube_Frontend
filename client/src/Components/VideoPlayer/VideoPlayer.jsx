@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { faComment, faThumbsUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faThumbsUp, faTimes, faSliders, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const VideoPlayer = () => {
@@ -13,6 +13,8 @@ const VideoPlayer = () => {
   const [username, setUsername] = useState('');
   const [avatar, setAvatar] = useState('');
   const [newComment, setNewComment] = useState('');
+  const [updateCommentForm, setUpdateCommentForm] = useState(false);
+  const [updatedComment, setUpdatedComment] = useState('');
   const [channelSubscribed, setChannelSubscribed] = useState(false);
 
 
@@ -62,6 +64,25 @@ const postComment = async (e) => {
     alert("Comment has been added.");
   }
 };
+
+const deleteComment = async ({ id }) => {
+  try {
+    const response = await fetch(`/api/comment/delete/${id}`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (response.ok) {
+      setTotalComments(prevComments => prevComments.filter(comment => comment._id !== id));
+      alert("Comment Deleted Successfully!");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 
 const toggleLike = async () => {
@@ -281,14 +302,43 @@ const toggleLike = async () => {
             alt="user_avatar"
             className="w-8 h-8 rounded-full object-cover"
           />
+          <div className='flex flex-row space-x-3'>
           <div className='flex flex-col'>
           <span className="font-semibold text-white">{comment.owner}</span>
           <span className="text-[10px] text-white">{comment.timeAgo}</span>
           </div>
+          <button
+            onClick={() => deleteComment({ id: comment._id })}
+            className="text-red-400 hover:text-red-600 transition"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+          </div>
         </div>
-        <div className="text-gray-200 pl-1">
+        <div className="text-gray-200 pl-1 flex flex-row space-x-8">
           <span>{comment.content}</span>
+          <button
+            onClick={() => setUpdateCommentForm(prev => !prev)}
+            className="text-red-400 hover:text-red-600 transition"
+          >
+            <FontAwesomeIcon icon={faSliders} />
+          </button>
         </div>
+        { updateCommentForm && (
+        <div className='flex flex-row'>
+          <input
+          type="text"
+          value={updatedComment}
+          onChange={(e) => setUpdatedComment(e.target.value)}
+          placeholder='Write the Updated Comment'
+          className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
+          />  
+          { updatedComment && (
+          <button className='text-white' onClick={() => setUpdatedComment('')}>X</button>
+)}
+        </div>
+        )
+}
       </div>
     ))}
   </div>

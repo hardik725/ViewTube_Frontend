@@ -79,7 +79,9 @@ useEffect(() => {
         <Link to="/user/settings">
         <SidebarItem icon={faGear} label="Settings" active={state[5]}/>
         </Link>
+        <Link to="/user/likedVideos">
         <SidebarItem icon={faThumbsUp} label="Liked videos" active={state[6]}/>
+        </Link>
       </div>
 
       <hr className="border-gray-700 my-4" />
@@ -90,10 +92,12 @@ useEffect(() => {
         
         <div>
         {subChannel.map((sub, idx) => (
+          <Link to={`/user/channelPage/${sub.username}`}>
           <div key={idx} className="flex items-center gap-2 py-1">
             <img src={sub.avatar} alt={sub.fullname} className="w-6 h-6 rounded-full object-cover" />
             <span className="text-sm">{sub.fullname}</span>
           </div>
+          </Link>
         ))}
         </div>
       </div>

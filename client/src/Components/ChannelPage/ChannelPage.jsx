@@ -58,7 +58,7 @@ const ChannelPage = () => {
 
     useEffect(() => {
         getChannelPage();
-    }, [])
+    }, [channelName])
 return (
   <div className="bg-black rounded-lg shadow-md text-white">
     {/* Cover Image */}

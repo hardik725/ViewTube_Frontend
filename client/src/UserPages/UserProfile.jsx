@@ -34,8 +34,9 @@ const updateAvatarForm = async (e) => {
   const formData = new FormData();
   formData.append('avatar', newAvatar);
 
-  const response = await fetch('/api/users/update-avatar', {
+  const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/users/update-avatar', {
     method: 'PATCH',
+    credentials: 'include',
     body: formData,
   });
 
@@ -62,8 +63,9 @@ const updateCoverImageForm = async (e) => {
   const formData = new FormData();
   formData.append('coverImage', newCoverImage);
 
-  const response = await fetch('/api/users/update-coverImage', {
+  const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/users/update-coverImage', {
     method: 'PATCH',
+    credentials: 'include',
     body: formData,
   });
 
@@ -85,11 +87,12 @@ const updateCoverImageForm = async (e) => {
 
 const getChannelData = async () => {
   try{
-    const response = await fetch('/api/dashboard/data',{
+    const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/dashboard/data',{
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
-      }
+      },
+      credentials: 'include',
     });
     if(response.ok){
       const output = await response.json();

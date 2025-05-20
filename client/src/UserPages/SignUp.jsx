@@ -37,8 +37,9 @@ const SignUp = () => {
     if (coverImage) formData.append("coverImage", coverImage);
 
     try {
-      const response = await fetch("/api/users/register", {
+      const response = await fetch("https://viewtube-xam7.onrender.com/api/v1/users/register", {
         method: "POST",
+        credentials: 'include',
         body: formData, // No need to set content-type manually
       });
 

@@ -8,8 +8,9 @@ const Subscription = () => {
 
   const getVideos = async (channelIds) => {
     try {
-      const response = await fetch(`/api/video/getChannelVideo`, {
+      const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getChannelVideo`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json"
         },

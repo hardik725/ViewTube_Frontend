@@ -6,8 +6,9 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try{
-    const response = await fetch(`/api/users/logout`,{
+    const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/logout`,{
         method: 'POST',
+        credentials: 'include',
         headers: {
             "content-Type": "application/json"
         },

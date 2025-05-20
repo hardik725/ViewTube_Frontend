@@ -25,8 +25,9 @@ const Sidebar = () => {
 }, [location.pathname, paths]);
 
     const getSubChannels = async () => {
-        const response = await fetch('/api/subscription/sub-channel',{
+        const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/subscription/sub-channel',{
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': "application/json",
             }

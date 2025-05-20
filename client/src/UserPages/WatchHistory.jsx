@@ -6,11 +6,12 @@ const WatchHistory = () => {
 
   const getWatchHistory = async () => {
     try {
-      const response = await fetch('/api/users/UserWatchHistory', {
+      const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/users/UserWatchHistory', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        credentials: 'include',
       });
       if (response.ok) {
         const output = await response.json();

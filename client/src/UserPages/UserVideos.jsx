@@ -36,8 +36,9 @@ const UserVideos = () => {
         if(videoFile){
             formData.append('videoFile',videoFile);
         }
-        const response = await fetch('/api/video/upload',{
+        const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/video/upload',{
             method: 'POST',
+            credentials: 'include',
             body: formData
         });
         if(response.ok){

@@ -25,8 +25,9 @@ const Home = () => {
     });
 
     try {
-      const response = await fetch(`/api/video/getVideo?${params}`, {
+      const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getVideo?${params}`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json"
         }

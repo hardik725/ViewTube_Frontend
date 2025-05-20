@@ -36,8 +36,9 @@ const VideoPlayer = () => {
 
 const postComment = async (e) => {
   e.preventDefault();
-  const response = await fetch(`/api/comment/add/${videoId}`, {
+  const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/comment/add/${videoId}`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       "Content-Type": "application/json"
     },
@@ -67,8 +68,9 @@ const postComment = async (e) => {
 
 const deleteComment = async ({ id }) => {
   try {
-    const response = await fetch(`/api/comment/delete/${id}`, {
+    const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/comment/delete/${id}`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json"
       }
@@ -89,8 +91,9 @@ const toggleLike = async () => {
   const params = new URLSearchParams({ type: "video" });
 
   try {
-    const response = await fetch(`/api/like/toggleLike/${videoId}?${params.toString()}`, {
+    const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/like/toggleLike/${videoId}?${params.toString()}`, {
       method: 'POST',
+      credentials: 'include',
       headers: { "Content-Type": "application/json" }
     });
 
@@ -123,8 +126,9 @@ const toggleLike = async () => {
 
   const toggleSubscription = async () => {
     try{
-      const response = await fetch(`/api/subscription/toggle/${video.owner_id}`,{
+      const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/subscription/toggle/${video.owner_id}`,{
         method: 'POST',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json"
         }
@@ -143,7 +147,9 @@ const toggleLike = async () => {
     const getVideo = async () => {
       try {
         const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getVideoById/${videoId}`);
-        const response2 = await fetch(`/api/video/incViewCound/${videoId}`);
+        const response2 = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/incViewCound/${videoId}`,{
+          credentials: 'include',
+        });
 
         if (response.ok && response2.ok) {
           const output = await response.json();

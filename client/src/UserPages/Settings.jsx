@@ -49,8 +49,9 @@ const uploadAvatar = async (e) => {
   try {
     const formData = new FormData();
     formData.append("avatar",ava);
-    const response = await fetch('/api/users/update-avatar', {
+    const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/users/update-avatar', {
       method: 'PATCH',
+      credentials: 'include',
       body: formData,
     });
 
@@ -80,8 +81,9 @@ const uploadCoverImage = async (e) => {
   try {
     const formData = new FormData();
     formData.append("coverImage",covIm);
-    const response = await fetch('/api/users/update-coverImage', {
+    const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/users/update-coverImage', {
       method: 'PATCH',
+      credentials: 'include',
       body: formData,
     });
 
@@ -125,11 +127,12 @@ const uploadCoverImage = async (e) => {
         console.log(atrib);
 
         try{
-            const response = await fetch('/api/users/change-accDetails',{
+            const response = await fetch('https://viewtube-xam7.onrender.com/api/v1/users/change-accDetails',{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: 'include',
                 body: JSON.stringify(dataToSend)
             });
             if(response.ok){
@@ -149,11 +152,12 @@ const uploadCoverImage = async (e) => {
     const changePassword = async (e) => {
         e.preventDefault();
         try{
-            const response = await fetch(`/api/users/change-password`,{
+            const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/change-password`,{
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     oldPassword: oldpassword,
                     newPassword: newpassword

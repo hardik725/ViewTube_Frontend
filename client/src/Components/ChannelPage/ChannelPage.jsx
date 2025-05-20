@@ -12,8 +12,9 @@ const ChannelPage = () => {
 
     const getChannelPage = async () => {
         try{
-            const response = await fetch(`/api/users/channeldata/${channelName}`,{
+            const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/channeldata/${channelName}`,{
                 method: "POST",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -35,8 +36,9 @@ const ChannelPage = () => {
 
     const toggleSubscriber = async () => {
         try{
-            const response = await fetch(`/api/subscription/toggle/${channelData._id}`,{
+            const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/subscription/toggle/${channelData._id}`,{
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 }

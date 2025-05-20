@@ -1,4 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import VideoBoxLayout from '../Components/VideoBoxLayout/VideoBoxLayout';
+import {
+  faPenToSquare,
+  faUpload,
+  faBan,
+  faTrash
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const UserVideos = () => {
   const [videoFile, setVideoFile] = useState(null);
@@ -7,6 +15,100 @@ const UserVideos = () => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [userVideos, setUserVideos] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
+  const [editedVideo, setEditedVideo] = useState({ title: '', description: '' });
+  const handleEditClick = (video, index) => {
+    setEditIndex(index);
+    setEditedVideo({ title: video.title, description: video.description });
+  };
+
+  const handleCancel = () => {
+    setEditIndex(null);
+    setEditedVideo({ title: '', description: '' });
+  };
+
+  const handleSave = async (id) => {
+    try{
+        const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/update-video/${id}`,{
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: editedVideo.title,
+                description: editedVideo.description,
+            })
+        });
+
+        if(response.ok){
+            setEditIndex(null);
+            window.dispatchEvent(new Event('updateVideo'));
+            alert("Video has been updated Successfully!");
+        }
+    }catch(error){
+        console.log(error);
+    }
+  };  
+
+  const deleteVideo = async (id) => {
+    try{
+        const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/delete-video/${id}`,{
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include'
+        });
+        if(response.ok){
+            const output = await response.json();
+            alert("Video Delete Successfully!");
+            window.dispatchEvent(new Event('updateVideo'));
+        }
+    }catch(error){
+        console.log(error);
+    }
+  }
+
+  const getUserVideos = async ({user}) => {
+        const params = new URLSearchParams({
+            userId: user._id,
+            limit: 12,
+        });
+
+        const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getVideo?${params}`,{
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if(response.ok){
+            const output = await response.json();
+            setUserVideos(output.data);
+            console.log(output.data);
+        }
+  }
+
+useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+        getUserVideos({ user });
+    }
+
+    const reloadVideo = () => {
+        getUserVideos({ user });
+    };
+
+    window.addEventListener('updateVideo', reloadVideo);
+
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('updateVideo', reloadVideo);
+    };
+}, []);
+
 
   const handleVideoFile = (e) => {
     const file = e.target.files[0];
@@ -138,6 +240,71 @@ const UserVideos = () => {
           Upload Video
         </button>
       </form>
+      <div>
+      <h1 className="text-3xl font-bold mb-6 border-b border-gray-700 pb-2 mt-6">
+        Your Uploaded Video
+      </h1>
+      <div className="flex flex-col mx-6 gap-4">
+        {userVideos &&
+          userVideos.map((video, ind) => (
+            <div key={video._id || ind} className="grid grid-cols-3 gap-4 items-start">
+              <VideoBoxLayout video={video} />
+
+              <div className="col-span-2 bg-gray-800 bg-opacity-40 p-4 rounded-md shadow">
+                {editIndex === ind ? (
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
+                      value={editedVideo.title}
+                      onChange={(e) =>
+                        setEditedVideo((prev) => ({ ...prev, title: e.target.value }))
+                      }
+                    />
+                    <textarea
+                      rows={4}
+                      className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
+                      value={editedVideo.description}
+                      onChange={(e) =>
+                        setEditedVideo((prev) => ({ ...prev, description: e.target.value }))
+                      }
+                    ></textarea>
+                    <div className="flex gap-2">
+                        <FontAwesomeIcon
+                        icon={faUpload}
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                        onClick={() => handleSave(video._id)}
+                        />
+                        <FontAwesomeIcon
+                        icon={faBan}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                        onClick={handleCancel}
+                        />
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <h2 className="text-xl font-semibold">{video.title}</h2>
+                    <p className="text-gray-400 mb-2">{video.description}</p>
+                    <div className='flex flex-row space-x-2'>
+                    <FontAwesomeIcon
+                    icon={faPenToSquare}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+                      onClick={() => handleEditClick(video, ind)}                    
+                    />
+                    <FontAwesomeIcon
+                    icon={faTrash}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+                      onClick={() => deleteVideo(video._id)}                    
+                    />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+      </div>
+      </div>
     </div>
   );
 };

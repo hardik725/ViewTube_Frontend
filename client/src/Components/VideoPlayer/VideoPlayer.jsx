@@ -18,6 +18,17 @@ const VideoPlayer = () => {
   const [channelSubscribed, setChannelSubscribed] = useState(false);
   const [userPlaylist, setUserPlaylist] = useState([]);
   const [playlistForm, setPlaylistForm] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);  
 
 
   useEffect(() => {
@@ -214,7 +225,206 @@ const toggleLike = async () => {
   if (!video) {
     return <div className="text-white text-center mt-10">Video is loading...</div>;
   }
+  if(isMobile){
+return (
+  <div className="flex flex-col min-h-screen bg-black text-white px-2 py-3 space-y-4">
+    {/* Video Player */}
+<div className="w-full aspect-video rounded-md overflow-hidden">
+  <video
+    src={video.videoFile}
+    controls
+    className="w-full h-full object-contain"
+  />
+</div>
 
+
+    {/* Title and Add to Playlist */}
+    <div className="flex flex-col gap-2">
+      <h1 className="text-xl font-bold">{video.title}</h1>
+
+      <div className="relative">
+        <button
+          onClick={() => setPlaylistForm(!playlistForm)}
+          className="w-full py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+        >
+          Add to Playlist
+        </button>
+
+        {playlistForm && (
+          <div className="absolute top-full left-0 z-50 bg-white border border-gray-300 shadow-lg rounded-sm w-full max-h-40 overflow-y-auto">
+            {userPlaylist.length > 0 ? (
+              userPlaylist.map((playlist) => (
+                <div
+                  key={playlist._id}
+                  className="px-3 py-2 hover:bg-gray-100 text-black cursor-pointer"
+                  onClick={() => addToPlaylist(playlist._id)}
+                >
+                  {playlist.name}
+                </div>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-gray-500">No playlists found.</div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* Channel Info */}
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <img
+          src={video.owner_avatar}
+          alt="user_avatar"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="flex flex-col">
+          <Link to={`/user/channelPage/${video.owner}`}>
+            <p className="text-base font-semibold">{video.owner}</p>
+          </Link>
+          <p className="text-xs text-gray-400">{video.owner_fullname}</p>
+        </div>
+      </div>
+
+      <button
+        className={`text-sm px-3 py-1 rounded ${
+          channelSubscribed ? "bg-red-600" : "bg-gray-600"
+        }`}
+        onClick={toggleSubscription}
+      >
+        {channelSubscribed ? "Subscribed" : "Subscribe"}
+      </button>
+    </div>
+
+    {/* Video Stats */}
+<div className="flex items-center gap-6 text-sm text-gray-400 mt-4">
+  {/* Views */}
+  <div className="flex items-center gap-1">
+    <span className="text-lg">{video.views}</span>
+    <span className="text-xs">views</span>
+  </div>
+
+  {/* Likes */}
+  <div
+    className="flex items-center gap-2 cursor-pointer hover:text-white"
+    onClick={toggleLike}
+  >
+    <FontAwesomeIcon
+      icon={faThumbsUp}
+      className={`text-2xl ${selfLike ? "text-blue-500" : "text-gray-500"}`}
+    />
+    <span className="text-lg">{totalLikes.length}</span>
+  </div>
+
+  {/* Comments */}
+  <div className="flex items-center gap-2">
+    <FontAwesomeIcon icon={faComment} className="text-2xl text-gray-400" />
+    <span className="text-lg">{totalComments.length}</span>
+  </div>
+</div>
+
+
+    {/* Description */}
+    <p className="text-sm text-gray-300">{video.description}</p>
+
+    {/* Comment Form */}
+    <form className="flex flex-col gap-2" onSubmit={postComment}>
+      <input
+        type="text"
+        name="newComment"
+        placeholder="Write a comment..."
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
+        className="w-full rounded-full px-4 py-2 text-black"
+      />
+      {newComment && (
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2"
+        >
+          Add Comment
+        </button>
+      )}
+    </form>
+
+    {/* Comments */}
+{totalComments?.length > 0 && (
+  <div className="space-y-4">
+    <h2 className="text-lg font-bold">Comments</h2>
+    {totalComments.map((comment, idx) => (
+      <div key={idx} className="bg-transparent p-2 rounded-lg space-y-1">
+        <div className="flex items-center gap-2">
+          <img
+            src={comment.ownerAvatar}
+            alt="user"
+            className="w-6 h-6 rounded-full"
+          />
+          <div className="flex flex-col text-sm">
+            <span className="font-semibold">{comment.owner}</span>
+            <span className="text-xs text-gray-400">{comment.timeAgo}</span>
+          </div>
+
+          {/* Spacer */}
+          <div className="flex items-center ml-auto gap-3">
+            {/* Edit Button */}
+            <button
+              onClick={() => {
+                setUpdateCommentForm(comment._id)
+                setUpdatedComment(comment.content)
+              }}
+              className="text-yellow-400 hover:text-yellow-600"
+            >
+              <FontAwesomeIcon icon={faSliders} />
+            </button>
+
+            {/* Delete Button */}
+            <button
+              onClick={() => deleteComment({ id: comment._id })}
+              className="text-red-400 hover:text-red-600"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </div>
+        </div>
+
+        {/* Comment content or update input */}
+        {updateCommentForm === comment._id ? (
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={updatedComment}
+              onChange={(e) => setUpdatedComment(e.target.value)}
+              placeholder="Update your comment"
+              className="w-full px-2 py-1 text-black rounded-md focus:outline-none"
+            />
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md"
+              onClick={() => updateComment(comment._id)}
+            >
+              Save
+            </button>
+            <button
+              className="text-white px-2 py-1"
+              onClick={() => {
+                setUpdatedComment('');
+                setUpdateCommentForm(null);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="text-sm text-white">{comment.content}</div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
+  </div>
+);
+
+  }else{
   return (
     <div className="flex flex-col min-h-screen bg-black text-white px-4 py-4">
 <>
@@ -262,7 +472,6 @@ const toggleLike = async () => {
   )}
 </div>
 
-
   </div>
 
   {/* Divider */}
@@ -284,14 +493,11 @@ const toggleLike = async () => {
       <p className="text-sm text-gray-400">{video.owner_fullname}</p>
     </div>
   </div>
-
   {/* Right side: subscribe button */}
   <button className={`${!channelSubscribed ? "bg-gray-600" : "bg-red-600"} p-3 rounded-sm`} onClick={toggleSubscription}>
     <p className="text-xl">{channelSubscribed ? "Subscribed" : "Subscribe"}</p>
   </button>
 </div>
-
-
   <div className="w-full max-w-4xl my-4 border-t border-gray-700" />
 
     {/* Video Stats */}
@@ -308,23 +514,18 @@ const toggleLike = async () => {
       />
       <span className="font-medium">{totalLikes.length}</span>
     </div>
-
     <div className="flex items-center gap-2">
       <FontAwesomeIcon icon={faComment} className="text-xl" />
       <span className="font-medium">{totalComments.length}</span>
       <span className="text-sm text-gray-500">comments</span>
     </div>
   </div>
-
   {/* Divider */}
   <div className="w-full max-w-4xl my-4 border-t border-gray-700" />
 
     <div className="w-full max-w-4xl px-2 space-y-1 text-white">
     <p className="text-gray-300 text-base">{video.description}</p>
   </div>
-
-
-
 </>
 
 <form className='mt-6 text-black flex flex-col items-center gap-2 w-full' onSubmit={postComment}>
@@ -412,10 +613,9 @@ const toggleLike = async () => {
     ))}
   </div>
 )}
-
-
     </div>
   );
+}
 };
 
 export default VideoPlayer;

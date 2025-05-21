@@ -29,39 +29,40 @@ const VideoBoxLayout = ({ video }) => {
   };
 
   return (
-    <Link to={`/user/videoPlayer/${videoId}`} className="block">
-      <div className="w-84 text-white rounded-lg overflow-hidden hover:bg-gray-800 transition">
-        {/* Thumbnail */}
-        <div className="relative">
-          <img
-            src={thumbnail}
-            alt="Thumbnail"
-            className="w-full h-52 object-cover rounded-lg"
-          />
-          <span className="absolute bottom-1 right-1 bg-black bg-opacity-75 text-sm px-2 py-0.5 rounded">
-            {formatDuration(duration)}
-          </span>
-        </div>
+<Link to={`/user/videoPlayer/${videoId}`} className="block w-full">
+  <div className="text-white rounded-lg overflow-hidden hover:bg-gray-800 transition w-full sm:w-84">
+    {/* Thumbnail */}
+    <div className="relative">
+      <img
+        src={thumbnail}
+        alt="Thumbnail"
+        className="w-full h-48 sm:h-52 object-cover rounded-t-lg"
+      />
+      <span className="absolute bottom-1 right-1 bg-black bg-opacity-75 text-xs px-2 py-0.5 rounded">
+        {formatDuration(duration)}
+      </span>
+    </div>
 
-        {/* Info */}
-        <div className="flex items-start mt-1 px-2">
-          <img
-            src={avatar}
-            alt="Avatar"
-            className="w-14 h-14 rounded-full mr-3 object-cover"
-          />
-          <div className="flex flex-col">
-            <h3 className="text-base text-gray-400 font-semibold truncate max-w-[300px]">
-              {description}
-            </h3>
-            <p className="text-sm text-gray-400 truncate max-w-[300px]">
-              {owner}
-            </p>
-            <p className="text-sm text-gray-500">{views} views</p>
-          </div>
-        </div>
+    {/* Info */}
+    <div className="flex items-start px-2 py-2 gap-2">
+      <img
+        src={avatar}
+        alt="Avatar"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover"
+      />
+      <div className="flex flex-col overflow-hidden">
+        <h3 className="text-sm sm:text-base text-gray-200 font-semibold truncate max-w-full">
+          {description}
+        </h3>
+        <p className="text-xs sm:text-sm text-gray-400 truncate max-w-full">
+          {owner}
+        </p>
+        <p className="text-xs sm:text-sm text-gray-500">{views} views</p>
       </div>
-    </Link>
+    </div>
+  </div>
+</Link>
+
   );
 };
 

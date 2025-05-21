@@ -51,7 +51,7 @@ const LoginPage = () => {
     backgroundImage: "url('https://i.ibb.co/C53b51jn/Mobile-Login.jpg')",
   }}
 >
-  <div className="bg-opacity-30 bg-black p-6 rounded-2xl shadow-lg w-full max-w-sm text-white">
+  <div className="bg-transparent p-6 rounded-2xl w-full max-w-sm text-white">
     <h2 className="text-3xl font-bold text-center mb-1">Login</h2>
     <p className="text-sm text-center mb-6 text-gray-300">Sign in to continue.</p>
 

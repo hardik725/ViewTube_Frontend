@@ -17,6 +17,17 @@ const UserVideos = () => {
   const [description, setDescription] = useState('');
   const [userVideos, setUserVideos] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);   
   const [editedVideo, setEditedVideo] = useState({ title: '', description: '' });
   const handleEditClick = (video, index) => {
     setEditIndex(index);
@@ -158,14 +169,14 @@ useEffect(() => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] px-6 py-8 text-white">
+    <div className="min-h-screen bg-[#0f0f0f] md:px-6 px-3 py-8 text-white">
       <h1 className="text-3xl font-bold mb-6 border-b border-gray-700 pb-2">
         Upload Your Video
       </h1>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-[#1c1c1c] p-6 rounded-xl shadow-xl max-w-4xl mx-auto"
+        className="bg-[#1c1c1c] md:p-6 p-2 rounded-xl shadow-xl max-w-4xl mx-auto"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Video File Preview */}
@@ -245,65 +256,85 @@ useEffect(() => {
       <h1 className="text-3xl font-bold mb-6 border-b border-gray-700 pb-2 mt-6">
         Your Uploaded Video
       </h1>
-      <div className="flex flex-col mx-6 gap-4">
-        {userVideos &&
-          userVideos.map((video, ind) => (
-            <div key={video._id || ind} className="grid grid-cols-3 gap-4 items-start">
-              <VideoBoxLayout video={video} />
+      <div className="flex flex-col md:mx-6 gap-4">
+{userVideos &&
+  userVideos.map((video, ind) => (
+    <div
+      key={video._id || ind}
+      className={`${
+        isMobile ? 'flex flex-col gap-2' : 'grid grid-cols-3 gap-4 items-start'
+      }`}
+    >
+      <div className={`${isMobile ? '' : ''}`}>
+        <VideoBoxLayout video={video} />
+      </div>
 
-              <div className="col-span-2 bg-gray-800 bg-opacity-40 p-4 rounded-md shadow">
-                {editIndex === ind ? (
-                  <div className="flex flex-col gap-2">
-                    <input
-                      type="text"
-                      className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
-                      value={editedVideo.title}
-                      onChange={(e) =>
-                        setEditedVideo((prev) => ({ ...prev, title: e.target.value }))
-                      }
-                    />
-                    <textarea
-                      rows={4}
-                      className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
-                      value={editedVideo.description}
-                      onChange={(e) =>
-                        setEditedVideo((prev) => ({ ...prev, description: e.target.value }))
-                      }
-                    ></textarea>
-                    <div className="flex gap-2">
-                        <FontAwesomeIcon
-                        icon={faUpload}
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                        onClick={() => handleSave(video._id)}
-                        />
-                        <FontAwesomeIcon
-                        icon={faBan}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                        onClick={handleCancel}
-                        />
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <h2 className="text-xl font-semibold">{video.title}</h2>
-                    <p className="text-gray-400 mb-2">{video.description}</p>
-                    <div className='flex flex-row space-x-2'>
-                    <FontAwesomeIcon
-                    icon={faPenToSquare}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
-                      onClick={() => handleEditClick(video, ind)}                    
-                    />
-                    <FontAwesomeIcon
-                    icon={faTrash}
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
-                      onClick={() => deleteVideo(video._id)}                    
-                    />
-                    </div>
-                  </div>
-                )}
-              </div>
+      <div
+        className={`${
+          isMobile
+            ? 'mt-2 bg-gray-800 bg-opacity-40 p-3 rounded-md shadow'
+            : 'col-span-2 bg-gray-800 bg-opacity-40 p-4 rounded-md shadow'
+        }`}
+      >
+        {editIndex === ind ? (
+          <div className="flex flex-col gap-2">
+            <input
+              type="text"
+              className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
+              value={editedVideo.title}
+              onChange={(e) =>
+                setEditedVideo((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }))
+              }
+            />
+            <textarea
+              rows={3}
+              className="w-full border-b border-gray-500 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-white transition duration-300"
+              value={editedVideo.description}
+              onChange={(e) =>
+                setEditedVideo((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
+            />
+            <div className="flex gap-2">
+              <FontAwesomeIcon
+                icon={faUpload}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                onClick={() => handleSave(video._id)}
+              />
+              <FontAwesomeIcon
+                icon={faBan}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                onClick={handleCancel}
+              />
             </div>
-          ))}
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-lg font-semibold">{video.title}</h2>
+            <p className="text-gray-400 mb-2">{video.description}</p>
+            <div className="flex flex-row space-x-2">
+              <FontAwesomeIcon
+                icon={faPenToSquare}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+                onClick={() => handleEditClick(video, ind)}
+              />
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+                onClick={() => deleteVideo(video._id)}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  ))}
+
       </div>
       </div>
     </div>

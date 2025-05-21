@@ -15,6 +15,7 @@ import UserVideos from './UserPages/UserVideos'
 import ChannelPage from './Components/ChannelPage/ChannelPage'
 import Settings from './UserPages/Settings'
 import LikedVideos from './UserPages/LikedVideos'
+import UserPlaylist from './UserPages/UserPlaylist'
 
 
 
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
           <Route path="channelPage/:channelName" element={<ChannelPage/>}></Route>
           <Route path="settings" element={<Settings/>}></Route>
           <Route path="likedVideos" element={<LikedVideos/>}></Route>
+          <Route path="playlist" element={<UserPlaylist/>}></Route>
     </Route>
     </>
     

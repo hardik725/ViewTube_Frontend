@@ -38,6 +38,32 @@ const Sidebar = () => {
         setSubChannel(channels);
         localStorage.setItem('sub-channels', JSON.stringify(channels));
       }
+
+      const getUserPlaylist = async () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if(user){
+          const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/playlist/userPlaylist/${user._id}`,{
+            method: 'POST',
+            credentials: 'include',
+        });
+        if(response.ok){
+          const output = await response.json();
+          localStorage.setItem("playlist",JSON.stringify(output.data));
+        }
+      }
+      }
+
+      useEffect(() => {
+        getUserPlaylist();
+        const reloadPlaylist = () => {
+          getUserPlaylist();
+        }
+        window.addEventListener("updatePlaylist",reloadPlaylist);
+
+        return () => {
+          window.removeEventListener("updatePlaylist",reloadPlaylist);
+        }
+      }, [])
 useEffect(() => {
   getSubChannels(); // initial fetch
 
@@ -73,7 +99,9 @@ useEffect(() => {
         <Link to="/user/history">
         <SidebarItem icon={faHistory} label="History" active={state[2]}/>
         </Link>
+        <Link to="/user/playlist">
         <SidebarItem icon={faList} label="Playlists" active={state[3]}/>
+        </Link>
         <Link to="/user/myVideos">
         <SidebarItem icon={faVideo} label="Your videos" active={state[4]}/>
         </Link>

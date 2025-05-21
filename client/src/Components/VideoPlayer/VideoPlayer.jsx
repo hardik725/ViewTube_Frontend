@@ -16,6 +16,38 @@ const VideoPlayer = () => {
   const [updateCommentForm, setUpdateCommentForm] = useState(false);
   const [updatedComment, setUpdatedComment] = useState('');
   const [channelSubscribed, setChannelSubscribed] = useState(false);
+  const [userPlaylist, setUserPlaylist] = useState([]);
+  const [playlistForm, setPlaylistForm] = useState(false);
+
+
+  useEffect(() => {
+    const playlist = JSON.parse(localStorage.getItem('playlist'));
+    if(playlist){
+      setUserPlaylist(playlist);
+    }
+  }, [])
+
+    const addToPlaylist = async (playlistId) => {
+        try{
+            const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/playlist/addVideo/${playlistId}`,{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    videoId: videoId
+                })
+            });
+            if(response.ok){
+              alert("Video Succesfully added to the playlist");
+              window.dispatchEvent(new Event('updatePlaylist'));
+              setPlaylistForm(false);
+            }
+        }catch(error){
+            console.log(error);
+        }
+    }
 
 
   const clearComment = () => {
@@ -198,8 +230,39 @@ const toggleLike = async () => {
   </div>
 
   {/* Title & Description */}
-  <div className="w-full max-w-4xl px-2 space-y-1 text-white">
+  <div className="w-full max-w-4xl px-2 space-y-1 text-white flex items-center justify-between">
     <h1 className="text-3xl font-bold">{video.title}</h1>
+  {/* here we will put a button add to playlist*/ }
+<div className="relative inline-block">
+  <button
+    onClick={() => setPlaylistForm(!playlistForm)}
+    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200"
+  >
+    Add to Playlist
+  </button>
+
+  {playlistForm && (
+    <div className="absolute top-full left-0 z-50 bg-white border border-gray-300 shadow-lg rounded-sm p-1 w-[134px]">
+      {userPlaylist.length > 0 ? (
+        userPlaylist.map((playlist) => (
+          <div
+            key={playlist._id}
+            className="px-1 py-1 hover:bg-gray-100 cursor-pointer text-black border-black"
+            onClick={() => {
+              addToPlaylist(playlist._id)
+            }}
+          >
+            {playlist.name}
+          </div>
+        ))
+      ) : (
+        <div className="px-4 py-2 text-gray-500">No playlists found.</div>
+      )}
+    </div>
+  )}
+</div>
+
+
   </div>
 
   {/* Divider */}

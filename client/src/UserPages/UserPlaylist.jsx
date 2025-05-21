@@ -59,6 +59,8 @@ const UserPlaylist = () => {
                 setName('');
                 setDescription('');
                 setIsPublic(true);
+                window.dispatchEvent(new Event('updatePlaylist'))
+                loadPlaylist();
             }
         }catch(error){
         }

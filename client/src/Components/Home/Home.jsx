@@ -76,14 +76,14 @@ const Home = () => {
         />
       )}
       <div>
-        <h2 className="text-lg font-semibold text-white">Explore Videos</h2>
-        <p className="text-sm text-gray-400">Based on your interests</p>
+        <h2 className="md:text-lg text-sm font-semibold text-white">Explore Videos</h2>
+        <p className="md:text-sm text-xs text-gray-400">Based on your interests</p>
       </div>
     </div>
 
     <button
       onClick={logout}
-      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 shadow"
+      className="bg-red-500 hover:bg-red-600 text-white md:px-4 md:py-2 px-2 py-1 rounded-lg text-sm font-medium transition-all duration-300 shadow"
     >
       Logout
     </button>

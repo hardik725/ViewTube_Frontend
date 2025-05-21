@@ -1,13 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+
 
 const Navbar = () => {
   const [username, setUsername] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  const handleSideBar = () => {
+    window.dispatchEvent(new Event('toggleSideBar'));
+  }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const userDetail = () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -38,7 +55,65 @@ const Navbar = () => {
   };
 
   }, []);
+  if(isMobile){
+return (
+  <div className="w-full bg-black shadow-md px-4 py-2 flex flex-col gap-2">
+    {/* Top Row: Logo + Bars and Welcome */}
+    <div className="flex justify-between items-center">
+      {/* Left Side: Bars + Logo */}
+      <div className="flex items-center gap-2">
+        <FontAwesomeIcon
+          icon={faBars}
+          onClick={handleSideBar}
+          className="w-5 h-5 text-white"
+        />
+        <img
+          src="https://i.ibb.co/B5wvYWPN/Screenshot-2025-05-13-183427.png"
+          alt="ViewTube Logo"
+          className="h-10 w-auto"
+        />
+      </div>
 
+      {/* Right Side: User Info */}
+      <div className="flex items-center gap-2">
+        {userAvatar && (
+          <img
+            src={userAvatar}
+            alt="User Avatar"
+            className="w-7 h-7 rounded-full object-cover border-2 border-blue-400 cursor-pointer"
+            onClick={() => navigate("/user/userProfile")}
+          />
+        )}
+        <span className="text-white font-medium text-xs truncate max-w-[100px]">
+          Welcome, {username}
+        </span>
+      </div>
+    </div>
+
+    {/* Search Bar Below */}
+    <div className="w-full">
+      <div className="flex items-center bg-[#111] text-white rounded-full px-3 py-1">
+        <input
+          type="text"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          placeholder="Search videos..."
+          className="bg-transparent outline-none flex-1 text-sm text-white placeholder-gray-400"
+        />
+        {searchText && (
+          <button onClick={() => setSearchText("")} className="text-white p-1">
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        )}
+        <button className="ml-1 text-white p-1" onClick={setQuery}>
+          <FontAwesomeIcon icon={faSearch} />
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+  }else{
   return (
 <div className="w-full bg-black shadow-md px-6 py-2 flex justify-between items-center">
 
@@ -87,9 +162,8 @@ const Navbar = () => {
     </span>
   </div>
 </div>
-
-
   );
+}
 };
 
 export default Navbar;

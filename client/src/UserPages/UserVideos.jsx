@@ -150,6 +150,7 @@ useEffect(() => {
             setVideoFilePreview(null);
             setTitle('');
             setDescription('');
+            alert("Video Uploaded Successfully");
         }
     }catch(error){
         console.log(error);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
@@ -11,6 +11,17 @@ const SignUp = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
   const navigate = useNavigate();
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);  
 
     const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -50,7 +61,123 @@ const SignUp = () => {
       alert("Something went wrong.");
     }
   };
+  if(isMobile){
+    return(
+<div
+  className="min-h-screen flex items-center justify-center bg-cover bg-center pt-[180px]"
+  style={{
+    backgroundImage: "url('https://i.ibb.co/C53b51jn/Mobile-Login.jpg')",
+  }}
+>
+  <div className="bg-white bg-opacity-10 px-4 py-6 rounded-2xl shadow-2xl w-full max-w-sm">
+    <h1 className="text-3xl font-bold text-center text-white mb-1">Sign Up</h1>
+    <p className="text-center text-white text-xs mb-4">Create your account</p>
 
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={fullname}
+        onChange={(e) => setFullname(e.target.value)}
+        required
+        className="w-full p-2.5 rounded-lg bg-white bg-opacity-30 placeholder-white text-white text-sm outline-none"
+      />
+
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required
+        className="w-full p-2.5 rounded-lg bg-white bg-opacity-30 placeholder-white text-white text-sm outline-none"
+      />
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="w-full p-2.5 rounded-lg bg-white bg-opacity-30 placeholder-white text-white text-sm outline-none"
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        className="w-full p-2.5 rounded-lg bg-white bg-opacity-30 placeholder-white text-white text-sm outline-none"
+      />
+
+<div className="flex flex-row gap-2 w-full">
+  {/* Avatar Upload Box */}
+  <label className="flex-1 cursor-pointer flex flex-col items-center">
+    <div className="w-20 h-20 rounded-full border border-white flex items-center justify-center text-white text-xs bg-white bg-opacity-10 overflow-hidden">
+      {avatarPreview ? (
+        <img
+          src={avatarPreview}
+          alt="Avatar Preview"
+          className="w-full h-full object-cover rounded-full"
+        />
+      ) : (
+        <span>Avatar</span>
+      )}
+    </div>
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleAvatarChange}
+      required
+      className="hidden"
+    />
+  </label>
+
+  {/* Cover Image Upload Box */}
+  <label className="flex-1 cursor-pointer flex flex-col items-center">
+    <div className="w-full h-20 rounded-md border border-white flex items-center justify-center text-white text-xs bg-white bg-opacity-10 overflow-hidden">
+      {coverPreview ? (
+        <img
+          src={coverPreview}
+          alt="Cover Preview"
+          className="w-full h-full object-cover rounded-md"
+        />
+      ) : (
+        <span>Cover Image</span>
+      )}
+    </div>
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleCoverChange}
+      className="hidden"
+    />
+  </label>
+</div>
+
+      <button
+        type="submit"
+        className="w-full bg-white text-black text-sm font-medium py-2 rounded-lg hover:bg-opacity-90 transition duration-200"
+      >
+        Sign Up
+      </button>
+    </form>
+
+    <div className="mt-4 text-center">
+      <p className="text-xs text-white">
+        Already have an account?{' '}
+        <button
+          onClick={() => navigate('/')}
+          className="text-white underline"
+        >
+          Sign in
+        </button>
+      </p>
+    </div>
+  </div>
+</div>
+    )
+  }else{
   return (
 <div
   className="min-h-screen flex items-center justify-end bg-cover bg-center"
@@ -157,6 +284,7 @@ const SignUp = () => {
       </div>
     </div>
   );
+}
 };
 
 export default SignUp;

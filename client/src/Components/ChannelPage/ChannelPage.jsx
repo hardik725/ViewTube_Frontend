@@ -9,7 +9,16 @@ const ChannelPage = () => {
     const [fullScreen, setFullScreen] = useState(false);
     const [isSubscribed, setSubscribed] = useState(false);
     const [user, setUser] = useState({});
-
+    const [isMobile, setIsMobile] = useState(window.innerWidth<768);
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth<768);
+      }
+      window.addEventListener("resize",handleResize);
+      return () => {
+        window.removeEventListener("resize",handleResize);
+      }
+    }, [])
     const getChannelPage = async () => {
         try{
             const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/channeldata/${channelName}`,{
@@ -61,6 +70,74 @@ const ChannelPage = () => {
     useEffect(() => {
         getChannelPage();
     }, [channelName])
+if (isMobile) {
+  return (
+    <div className="bg-black text-white rounded-lg shadow-md">
+      {/* Cover Image */}
+      <div className="relative h-40 w-full">
+        <img
+          src={channelData.coverImage}
+          alt="Cover"
+          className="w-full h-full object-cover rounded-t-lg"
+        />
+      </div>
+
+      {/* Avatar and Info */}
+      <div className="px-4 pb-4 relative">
+        {/* Avatar */}
+        <div className="absolute -top-8 left-4 z-20">
+          <div className="w-[90px] h-[90px] rounded-full border-4 border-white overflow-hidden cursor-pointer">
+            <img
+              src={channelData.avatar}
+              alt="Avatar"
+              className="w-full h-full object-cover"
+              onClick={() => setFullScreen(true)}
+            />
+          </div>
+        </div>
+
+        {fullScreen && (
+          <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+            <button
+              className="absolute top-5 right-5 text-white text-3xl"
+              onClick={() => setFullScreen(false)}
+            >
+              &times;
+            </button>
+            <img
+              src={channelData.avatar}
+              alt="Full Avatar"
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+        )}
+
+        {/* Channel Info */}
+        <div className="text-left ml-[110px]">
+          <h2 className="text-xl font-bold">{channelData.fullname}</h2>
+          <p className="text-sm text-gray-300">@{channelData.username}</p>
+
+          {/* Subscribers and Button */}
+          <div className="flex flex-col">
+            <p className="text-sm text-gray-300">
+              {subscribers} subscribers
+            </p>
+            <p className="text-sm text-gray-300">
+              {channelSubscribed} subscribed channels
+            </p>
+            <button
+              className={`w-fit px-4 py-1 mt-1 rounded-full font-semibold self-start hover:bg-gray-200 transition ${isSubscribed ? "bg-red-700 text-white" : "bg-white text-black"}`}
+              onClick={toggleSubscriber}
+            >
+              {isSubscribed ? "Subscribed" : "Subscribe"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+else{
 return (
   <div className="bg-black rounded-lg shadow-md text-white">
     {/* Cover Image */}
@@ -123,7 +200,7 @@ return (
     </div>
   </div>
 );
-
+    }
 }
 
 export default ChannelPage

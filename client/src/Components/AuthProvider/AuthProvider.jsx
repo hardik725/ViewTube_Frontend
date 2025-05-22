@@ -1,9 +1,12 @@
 // src/context/AuthContext.js
-import React, { createContext } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [showSideBar, setShowSideBar] = useState(false);
+
+  const toggleSideBar = () => setShowSideBar(prev => !prev);
   const logout = async () => {
     try{
     const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/logout`,{
@@ -26,8 +29,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ logout }}>
+    <AuthContext.Provider
+      value={{
+        logout,
+        showSideBar,
+        setShowSideBar,
+        toggleSideBar
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

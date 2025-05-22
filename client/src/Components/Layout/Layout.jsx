@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 import Sidebar from '../SideBar/SideBar';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../AuthProvider/AuthProvider';
 
 
 const Layout = () => {
@@ -12,18 +13,12 @@ const Layout = () => {
   const mobNavRef = useRef(null);
   const sidebarRef = useRef(null); // Ref for sidebar
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [showSidebar, setShowSidebar] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const toggleSideBar = () => {
-      setShowSidebar(prev => !prev);
-    }
-    window.addEventListener('toggleSideBar',toggleSideBar);
+  const {showSideBar, setShowSideBar, toggleSideBar} = useAuth();
 
-    return () => {
-      window.removeEventListener('toggleSideBar',toggleSideBar);
-    }
+  useEffect(() => {
+    toggleSideBar();
   }, [location.pathname])
 
 
@@ -57,11 +52,11 @@ const Layout = () => {
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target)
       ) {
-        setShowSidebar(false);
+        setShowSideBar(false);
       }
     };
 
-    if (showSidebar) {
+    if (showSideBar) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -70,7 +65,7 @@ const Layout = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showSidebar]);
+  }, [showSideBar]);
 
   if(isMobile){
     return(
@@ -81,7 +76,7 @@ const Layout = () => {
       </div>
 
       {/* Sidebar overlay on top */}
-      {showSidebar && (
+      {showSideBar && (
         <div className="fixed top-0 left-0 w-64 h-full bg-gray-900 text-white z-[100] shadow-lg transition-transform duration-3000"
         ref={sidebarRef}>
           <Sidebar />

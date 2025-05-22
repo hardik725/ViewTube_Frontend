@@ -22,7 +22,6 @@ const Sidebar = () => {
         const updatedState = paths.map((path) => location.pathname === path ? true : false
     );
     setState(updatedState);
-    window.dispatchEvent(new Event('toggleSideBar'));
 }, [location.pathname, paths]);
 
     const getSubChannels = async () => {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthProvider/AuthProvider';
 
 
 const Navbar = () => {
@@ -10,9 +11,10 @@ const Navbar = () => {
   const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const {showSideBar, setShowSideBar, toggleSideBar} = useAuth();
 
   const handleSideBar = () => {
-    window.dispatchEvent(new Event('toggleSideBar'));
+    toggleSideBar();
   }
 
   useEffect(() => {

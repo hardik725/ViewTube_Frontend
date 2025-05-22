@@ -63,10 +63,10 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white px-4 py-6">
+    <div className="min-h-screen bg-black text-white md:px-4 px-2 py-6">
       {/* Header */}
-<div className="relative w-full max-w-6xl mx-auto mb-8 px-4">
-  <div className="flex items-center justify-between bg-white/5 backdrop-blur-md border border-white/10 shadow-md p-4 rounded-xl">
+<div className="relative w-full md:max-w-6xl mx-auto mb-8">
+  <div className="flex items-center justify-between bg-white/5 backdrop-blur-md border border-white/10 shadow-md p-2 rounded-xl">
     <div className="flex items-center gap-4">
       {userAvatar && (
         <img
@@ -81,12 +81,14 @@ const Home = () => {
       </div>
     </div>
 
-    <button
-      onClick={logout}
-      className="bg-red-500 hover:bg-red-600 text-white md:px-4 md:py-2 px-2 py-1 rounded-lg text-sm font-medium transition-all duration-300 shadow"
-    >
-      Logout
-    </button>
+<button
+  onClick={logout}
+  className="relative inline-flex items-center justify-center overflow-hidden text-white rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl group"
+>
+  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></span>
+  Logout
+</button>
+
   </div>
 </div>
 

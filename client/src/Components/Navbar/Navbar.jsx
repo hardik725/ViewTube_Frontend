@@ -61,7 +61,7 @@ return (
     {/* Top Row: Logo + Bars and Welcome */}
     <div className="flex justify-between items-center">
       {/* Left Side: Bars + Logo */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <FontAwesomeIcon
           icon={faBars}
           onClick={handleSideBar}
@@ -70,7 +70,7 @@ return (
         <img
           src="https://i.ibb.co/B5wvYWPN/Screenshot-2025-05-13-183427.png"
           alt="ViewTube Logo"
-          className="h-10 w-auto"
+          className="h-12 w-auto"
         />
       </div>
 
@@ -80,13 +80,18 @@ return (
           <img
             src={userAvatar}
             alt="User Avatar"
-            className="w-7 h-7 rounded-full object-cover border-2 border-blue-400 cursor-pointer"
+            className="w-9 h-9 rounded-full object-cover border-2 border-blue-400 cursor-pointer"
             onClick={() => navigate("/user/userProfile")}
           />
         )}
+        <div className='flex flex-col'>
         <span className="text-white font-medium text-xs truncate max-w-[100px]">
-          Welcome, {username}
+          Welcome,
         </span>
+        <span className="text-white font-medium text-xs truncate max-w-[100px]">
+          {username}
+        </span>
+        </div>
       </div>
     </div>
 

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 import Sidebar from '../SideBar/SideBar';
+import { useLocation } from 'react-router-dom';
 
 
 const Layout = () => {
@@ -12,6 +13,7 @@ const Layout = () => {
   const sidebarRef = useRef(null); // Ref for sidebar
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showSidebar, setShowSidebar] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const toggleSideBar = () => {
@@ -22,7 +24,7 @@ const Layout = () => {
     return () => {
       window.removeEventListener('toggleSideBar',toggleSideBar);
     }
-  }, [])
+  }, [location.pathname])
 
 
   useEffect(() => {

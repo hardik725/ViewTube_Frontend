@@ -15,6 +15,40 @@ const UserProfile = () => {
   const [fullScreen, setFullScreen] = useState(false);
   const [subChannel, setSubChannel] = useState([]);
   const [channelData, setChannelData] = useState({});
+  const [userBio, setUserBio] = useState('');
+  const [editBio, setEditBio] = useState(false);
+  const [bioText, setBioText] = useState('');
+
+  const handleSaveBio = async (e) => {
+    e.preventDefault();
+    try{
+      const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/updateBio`,{
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          bio: bioText
+        })
+      });
+      if(response.ok){
+        const output = await response.json();
+        alert("Bio has been Successfully Updated");
+        setEditBio(false);
+        setBioText('');
+        setUserBio(output.data.bio);
+        localStorage.removeItem('user');
+        localStorage.setItem('user',JSON.stringify(output.data));
+      }
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  const toggleEditBio = () => {
+    setBioText(userBio);
+  }
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
     const handleResize = () => {
@@ -123,6 +157,7 @@ const getChannelData = async () => {
       setCoverImage(user.coverImage || 'https://via.placeholder.com/900x300'); // fallback
       setUsername(user.username || 'username');
       setFullName(user.fullname || 'Full Name');
+      setUserBio(user.bio || 'userBio');
     }
 
     const subChannels = JSON.parse(localStorage.getItem('sub-channels'));
@@ -235,7 +270,82 @@ if (isMobile) {
           </div>
         </div>
       </div>
+      {/* User Bio */}
+<div className="mt-2 px-6 py-5 rounded-2xl bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-md border border-white/10 text-gray-300 shadow-xl relative overflow-hidden">
 
+  {/* Header */}
+  <div className="flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
+    <svg
+      className="w-5 h-5 text-purple-500"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+    >
+      <path d="M18 13v-2a6 6 0 10-12 0v2H4v3h2v2h8v-2h2v-3h-2z" />
+    </svg>
+
+    <div className="flex justify-between items-center w-full">
+      <h2 className="text-md font-semibold text-white tracking-wide uppercase">
+        About the Creator
+      </h2>
+      <button
+        className="text-[12px] px-2 py-1 rounded-md bg-purple-600 hover:bg-purple-700 transition-colors text-white font-medium"
+        onClick={() => {
+          toggleEditBio();
+          setEditBio(prev => !prev);
+        }}
+      >
+        {editBio ? "Cancel" : "Edit"}
+      </button>
+    </div>
+  </div>
+
+  {/* Bio Display Mode */}
+  {!editBio && (
+    <>
+  <p className="text-[11px] text-gray-300 leading-relaxed tracking-wide indent-4">
+    {userBio || "This channel hasn't added a bio yet. Check back later for more info!"}
+  </p>
+
+  {/* Decorative Gradient Glow */}
+  <div className="absolute -top-6 -right-8 w-32 h-32 bg-purple-600 opacity-10 blur-2xl rounded-full pointer-events-none"></div>
+  </>
+  )}
+
+  {/* Bio Edit Mode */}
+  {editBio && (
+  <form
+    onSubmit={handleSaveBio}
+    className="flex flex-col gap-4"
+  >
+      <textarea
+        rows={5}
+        value={bioText}
+        onChange={(e) => setBioText(e.target.value)}
+        placeholder="Write something about your channel..."
+        className="w-full text-sm p-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+      />
+
+      <div className="flex gap-3 justify-end">
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-1.5 rounded-md transition"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          className="bg-gray-700 hover:bg-gray-800 text-white text-sm px-4 py-1.5 rounded-md transition"
+          onClick={() => {
+            toggleEditBio();
+            setEditBio(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  )}
+</div>
       {/* Subscribed Channels */}
       <div className="p-4">
         <h3 className="text-lg font-semibold border-b border-gray-700 pb-1">Subscribed</h3>
@@ -390,43 +500,125 @@ else{
       <p className="text-sm text-gray-300">{username}</p>
     </div>
   </div>
-<div className="mt-12 px-6 text-white">
-  <h1 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-2">
+<div className="mt-6 px-6 text-white">
+  <h1 className="text-2xl font-semibold mb-6 border-b border-gray-700">
     Channel Statistics
   </h1>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-[80px]">
     {/* Likes */}
-    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
-      <FontAwesomeIcon icon={faThumbsUp} className="text-blue-500 text-3xl" />
-      <p className="text-xl font-semibold">{channelData.totalLikes}</p>
+    <div className="flex flex-col items-center justify-center p-2 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-200">
+      <FontAwesomeIcon icon={faThumbsUp} className="text-blue-400 text-2xl mb-2" />
+      <p className="text-sm text-gray-400">Likes</p>
+      <p className="text-lg font-bold text-white">{channelData.totalLikes}</p>
     </div>
 
     {/* Views */}
-    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
-      <FontAwesomeIcon icon={faEye} className="text-green-500 text-3xl" />
-      <p className="text-xl font-semibold">{channelData.totalViews}</p>
+    <div className="flex flex-col items-center justify-center p-4 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-200">
+      <FontAwesomeIcon icon={faEye} className="text-green-400 text-2xl mb-2" />
+      <p className="text-sm text-gray-400">Views</p>
+      <p className="text-lg font-bold text-white">{channelData.totalViews}</p>
     </div>
 
     {/* Comments */}
-    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
-      <FontAwesomeIcon icon={faCommentDots} className="text-yellow-400 text-3xl" />
-      <p className="text-xl font-semibold">{channelData.totalComments}</p>
+    <div className="flex flex-col items-center justify-center p-4 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-200">
+      <FontAwesomeIcon icon={faCommentDots} className="text-yellow-300 text-2xl mb-2" />
+      <p className="text-sm text-gray-400">Comments</p>
+      <p className="text-lg font-bold text-white">{channelData.totalComments}</p>
     </div>
 
     {/* Subscribers */}
-    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
-      <FontAwesomeIcon icon={faUsers} className="text-purple-500 text-3xl" />
-      <p className="text-xl font-semibold">{channelData.totalSubsribers}</p>
+    <div className="flex flex-col items-center justify-center p-4 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-200">
+      <FontAwesomeIcon icon={faUsers} className="text-purple-400 text-2xl mb-2" />
+      <p className="text-sm text-gray-400">Subscribers</p>
+      <p className="text-lg font-bold text-white">{channelData.totalSubsribers}</p>
     </div>
 
     {/* Videos */}
-    <div className="flex flex-row items-center justify-center gap-3 p-4 bg-[#1e1e1e] rounded-xl border border-gray-700 shadow-md">
-      <FontAwesomeIcon icon={faVideo} className="text-pink-500 text-3xl" />
-      <p className="text-xl font-semibold">{channelData.videoCount}</p>
+    <div className="flex flex-col items-center justify-center p-4 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-200">
+      <FontAwesomeIcon icon={faVideo} className="text-pink-400 text-2xl mb-2" />
+      <p className="text-sm text-gray-400">Videos</p>
+      <p className="text-lg font-bold text-white">{channelData.videoCount}</p>
     </div>
   </div>
+
+<div className="mt-6 px-6 py-5 rounded-2xl bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-md border border-white/10 text-gray-300 shadow-xl relative overflow-hidden">
+
+  {/* Header */}
+  <div className="flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
+    <svg
+      className="w-5 h-5 text-purple-500"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+    >
+      <path d="M18 13v-2a6 6 0 10-12 0v2H4v3h2v2h8v-2h2v-3h-2z" />
+    </svg>
+
+    <div className="flex justify-between items-center w-full">
+      <h2 className="text-lg font-semibold text-white tracking-wide uppercase">
+        About the Creator
+      </h2>
+      <button
+        className="text-sm px-3 py-1 rounded-md bg-purple-600 hover:bg-purple-700 transition-colors text-white font-medium"
+        onClick={() => {
+          toggleEditBio();
+          setEditBio(prev => !prev);
+        }}
+      >
+        {editBio ? "Cancel" : "Edit"}
+      </button>
+    </div>
+  </div>
+
+  {/* Bio Display Mode */}
+  {!editBio && (
+    <>
+  <p className="text-sm text-gray-300 leading-relaxed tracking-wide indent-4">
+    {userBio || "This channel hasn't added a bio yet. Check back later for more info!"}
+  </p>
+
+  {/* Decorative Gradient Glow */}
+  <div className="absolute -top-6 -right-8 w-32 h-32 bg-purple-600 opacity-10 blur-2xl rounded-full pointer-events-none"></div>
+  </>
+  )}
+
+  {/* Bio Edit Mode */}
+  {editBio && (
+  <form
+    onSubmit={handleSaveBio}
+    className="flex flex-col gap-4"
+  >
+      <textarea
+        rows={5}
+        value={bioText}
+        onChange={(e) => setBioText(e.target.value)}
+        placeholder="Write something about your channel..."
+        className="w-full text-sm p-3 rounded-lg bg-black/30 border border-white/10 text-gray-200 placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+      />
+
+      <div className="flex gap-3 justify-end">
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-1.5 rounded-md transition"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          className="bg-gray-700 hover:bg-gray-800 text-white text-sm px-4 py-1.5 rounded-md transition"
+          onClick={() => {
+            toggleEditBio();
+            setEditBio(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  )}
 </div>
+</div>
+
 
 <div className="mt-6 px-6">
   <h1 className="text-2xl font-semibold text-white mb-4 border-b border-gray-600 pb-2">

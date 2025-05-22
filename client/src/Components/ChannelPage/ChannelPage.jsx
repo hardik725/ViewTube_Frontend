@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import HomePage from '../ChannelPages/HomePage';
+import ChannelVideo from '../ChannelPages/ChannelVideo';
+import ChannelPlaylist from '../ChannelPages/ChannelPlaylist';
+import ChannelTweet from '../ChannelPages/ChannelTweet';
 
 const ChannelPage = () => {
     const [channelData, setChannelData] = useState({});
@@ -10,6 +14,7 @@ const ChannelPage = () => {
     const [isSubscribed, setSubscribed] = useState(false);
     const [user, setUser] = useState({});
     const [isMobile, setIsMobile] = useState(window.innerWidth<768);
+    const [options, setOptions] = useState([true,false,false,false]);
     useEffect(() => {
       const handleResize = () => {
         setIsMobile(window.innerWidth<768);
@@ -198,6 +203,33 @@ return (
         </div>
       </div>
     </div>
+    <div className='grid grid-cols-4 w-1/3 gap-2 text-white text-center'>
+      <div id="home" onClick={() => setOptions([true,false,false,false])} className={`hover:bg-gray-500 cursor-pointer ${options[0] ? "bg-gray-500" : ""}`}>Home</div>
+      <div id="videos" onClick={() => setOptions([false,true,false,false])} className={`hover:bg-gray-500 cursor-pointer ${options[1] ? "bg-gray-500" : ""}`}>Videos</div>
+      <div id="playlist" onClick={() => setOptions([false,false,true,false])} className={`hover:bg-gray-500 cursor-pointer ${options[2] ? "bg-gray-500" : ""}`}>Playlist</div>
+      <div id="tweets" onClick={() => setOptions([false,false,false,true])} className={`hover:bg-gray-500 cursor-pointer ${options[3] ? "bg-gray-500" : ""}`}>Tweets</div>
+    </div>
+    <div className="w-full max-w-4xl my-2 border-t border-gray-700" />
+    {
+      options[0] && (
+        <HomePage/>
+      )
+    }
+    {
+      options[1] && (
+        <ChannelVideo/>
+      )
+    }
+    {
+      options[2] && (
+        <ChannelPlaylist/>
+      )
+    }
+    {
+      options[3] && (
+        <ChannelTweet/>
+      )
+    }
   </div>
 );
     }

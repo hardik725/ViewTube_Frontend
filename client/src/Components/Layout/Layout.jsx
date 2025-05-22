@@ -18,7 +18,7 @@ const Layout = () => {
   const {showSideBar, setShowSideBar, toggleSideBar} = useAuth();
 
   useEffect(() => {
-    toggleSideBar();
+    setShowSideBar(false);
   }, [location.pathname])
 
 

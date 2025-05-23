@@ -139,6 +139,33 @@ if (isMobile) {
           </div>
         </div>
       </div>
+    <div className='grid grid-cols-4 w-full gap-2 text-white text-center'>
+      <div id="home" onClick={() => setOptions([true,false,false,false])} className={`hover:bg-gray-500 cursor-pointer ${options[0] ? "bg-gray-500" : ""}`}>Home</div>
+      <div id="videos" onClick={() => setOptions([false,true,false,false])} className={`hover:bg-gray-500 cursor-pointer ${options[1] ? "bg-gray-500" : ""}`}>Videos</div>
+      <div id="playlist" onClick={() => setOptions([false,false,true,false])} className={`hover:bg-gray-500 cursor-pointer ${options[2] ? "bg-gray-500" : ""}`}>Playlist</div>
+      <div id="tweets" onClick={() => setOptions([false,false,false,true])} className={`hover:bg-gray-500 cursor-pointer ${options[3] ? "bg-gray-500" : ""}`}>Tweets</div>
+    </div>
+    <div className="w-full my-2 border-t border-gray-700" />
+    {
+      options[0] && (
+        <HomePage channel={channelData}/>
+      )
+    }
+    {
+      options[1] && (
+        <ChannelVideo channel={channelData}/>
+      )
+    }
+    {
+      options[2] && (
+        <ChannelPlaylist channel={channelData}/>
+      )
+    }
+    {
+      options[3] && (
+        <ChannelTweet channel={channelData}/>
+      )
+    }
     </div>
   );
 }
@@ -209,25 +236,25 @@ return (
       <div id="playlist" onClick={() => setOptions([false,false,true,false])} className={`hover:bg-gray-500 cursor-pointer ${options[2] ? "bg-gray-500" : ""}`}>Playlist</div>
       <div id="tweets" onClick={() => setOptions([false,false,false,true])} className={`hover:bg-gray-500 cursor-pointer ${options[3] ? "bg-gray-500" : ""}`}>Tweets</div>
     </div>
-    <div className="w-full max-w-4xl my-2 border-t border-gray-700" />
+    <div className="w-full my-2 border-t border-gray-700" />
     {
       options[0] && (
-        <HomePage/>
+        <HomePage channel={channelData}/>
       )
     }
     {
       options[1] && (
-        <ChannelVideo/>
+        <ChannelVideo channel={channelData}/>
       )
     }
     {
       options[2] && (
-        <ChannelPlaylist/>
+        <ChannelPlaylist channel={channelData}/>
       )
     }
     {
       options[3] && (
-        <ChannelTweet/>
+        <ChannelTweet channel={channelData}/>
       )
     }
   </div>

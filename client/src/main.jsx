@@ -17,6 +17,7 @@ import Settings from './UserPages/Settings'
 import LikedVideos from './UserPages/LikedVideos'
 import UserPlaylist from './UserPages/UserPlaylist'
 import PlaylistBox from './Components/PlaylistBox/PlaylistBox'
+import TweetsPage from './Components/TweetsPage/TweetsPage'
 
 
 
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
           <Route path="likedVideos" element={<LikedVideos/>}></Route>
           <Route path="playlist" element={<UserPlaylist/>}></Route>
           <Route path="playlistBox/:playlistId" element={<PlaylistBox/>}></Route>
+          <Route path="tweetPage" element={<TweetsPage/>}></Route>
     </Route>
     </>
     

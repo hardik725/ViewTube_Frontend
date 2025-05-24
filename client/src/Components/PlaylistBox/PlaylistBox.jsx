@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import VideoPlayer from '../VideoPlayer/VideoPlayer';
 import { useParams } from 'react-router-dom';
+import {
+  faPlay,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PlaylistBox = () => {
   const { playlistId } = useParams();
@@ -18,45 +23,56 @@ const PlaylistBox = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []); 
-  const PlaylistSidebar = () => (
-    <div className="bg-black h-full overflow-y-auto pr-2 pt-4 w-full sm:w-[300px]">
-      <div className="flex justify-between items-center px-2 mb-3">
-        <h2 className="text-white text-lg font-semibold">Playlist</h2>
-        {isMobile && (
-          <button
-            onClick={() => setShowPlaylist(false)}
-            className="text-white text-sm bg-gray-700 px-2 py-1 rounded"
-          >
-            Close
-          </button>
-        )}
-      </div>
-      {playlistData?.[0]?.videos_details?.map((video, index) => (
-        <div
-          key={video._id || index}
-          onClick={() => {
-            setVideoId(video._id);
-            if (isMobile) setShowPlaylist(false);
-          }}
-          className={`mb-3 p-2 rounded-md cursor-pointer transition ${
-            video._id === videoId ? 'bg-gray-700' : 'hover:bg-gray-800'
-          }`}
+const PlaylistSidebar = () => (
+  <div className="bg-black h-full overflow-y-auto w-full sm:w-[360px] px-4 py-5 border-t sm:border-t-0 sm:border-l border-gray-700">
+    {/* Header */}
+    <div className="flex justify-between items-center mb-6">
+      <h2 className="text-white text-xl font-semibold tracking-tight">Up Next</h2>
+      {isMobile && (
+        <button
+          onClick={() => setShowPlaylist(false)}
+          className="text-white text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full transition"
         >
-          <div className="w-full aspect-video relative rounded overflow-hidden">
-            <img
-              src={video.thumbnail}
-              alt={video.title}
-              className="w-full h-full object-cover"
-            />
-            <span className="absolute bottom-1 right-2 bg-black bg-opacity-70 text-white text-xs px-1 py-0.5 rounded">
-              {formatDuration(video.duration)}
-            </span>
-          </div>
-          <p className="text-white text-sm mt-1 truncate">{video.title}</p>
-        </div>
-      ))}
+          <FontAwesomeIcon icon={faXmark} />
+        </button>
+      )}
     </div>
-  );
+
+    {/* Video List */}
+    {playlistData?.[0]?.videos_details?.map((video, index) => (
+      <div
+        key={video._id || index}
+        onClick={() => {
+          setVideoId(video._id);
+          if (isMobile) setShowPlaylist(false);
+        }}
+        className={`flex gap-3 mb-5 cursor-pointer rounded-lg p-2 transition-all duration-200 shadow-sm ${
+          video._id === videoId ? 'bg-gray-800' : 'hover:bg-gray-800'
+        }`}
+      >
+        {/* Fixed-size Thumbnail */}
+        <div className="relative w-[160px] h-[90px] rounded-md overflow-hidden shrink-0">
+          <img
+            src={video.thumbnail}
+            alt={video.title}
+            className="w-full h-full object-cover"
+          />
+          <span className="absolute bottom-1 right-1 bg-black bg-opacity-75 text-white text-xs px-1.5 py-0.5 rounded-sm">
+            {formatDuration(video.duration)}
+          </span>
+        </div>
+
+        {/* Title & Meta */}
+        <div className="flex flex-col justify-center w-full">
+          <p className="text-white text-sm font-medium leading-tight line-clamp-2">
+            {video.title}
+          </p>
+          <p className="text-gray-400 text-xs mt-1">Video {index + 1}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+);
 
   const formatDuration = (seconds) => {
     if (!seconds || isNaN(seconds)) return '0:00';
@@ -99,13 +115,13 @@ const PlaylistBox = () => {
         )}
         <button
           onClick={() => setShowPlaylist(true)}
-          className="bg-gray-800 text-white p-2 m-4 rounded-md self-start absolute top-1 left-1"
+          className={`bg-gray-800 text-white p-2 m-4 rounded-md self-start absolute top-1 left-1 ${showPlaylist ? "hidden" : "" }`}
         >
-          Show Playlist
+          <FontAwesomeIcon icon={faPlay} className='mr-1'/> {playlistData?.[0]?.videos_details.length}
         </button>
 
         {showPlaylist && (
-          <div className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-black bg-opacity-95 overflow-y-auto">
+          <div className="absolute left-0 top-[30vh] right-0 bottom-0 z-50 bg-black bg-opacity-95 overflow-y-auto">
             <PlaylistSidebar />
           </div>
         )}

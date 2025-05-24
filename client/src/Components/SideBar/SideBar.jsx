@@ -4,11 +4,13 @@ import {
   faHistory,
   faThumbsUp,
   faVideo,
-  faList,
+  faList
 } from '@fortawesome/free-solid-svg-icons';
+import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { useLocation } from 'react-router-dom';
-const paths = ['/user','/user/subscription','/user/history','/user/playlist','/user/myVideos','/user/settings','/user/likedVideos'];
+const paths = ['/user','/user/subscription','/user/history','/user/playlist','/user/myVideos','/user/settings','/user/likedVideos','/user/tweetPage'];
 import { Link } from 'react-router-dom';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 
@@ -110,6 +112,9 @@ useEffect(() => {
         </Link>
         <Link to="/user/likedVideos">
         <SidebarItem icon={faThumbsUp} label="Liked videos" active={state[6]}/>
+        </Link>
+        <Link to="/user/tweetPage">
+        <SidebarItem icon={faTwitter} label="Tweets" active={state[7]}/>
         </Link>
       </div>
 

@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const UserPlaylist = () => {
 
@@ -8,6 +10,7 @@ const UserPlaylist = () => {
     const [user, setUser] = useState({});
     const [userPlaylist, setUserPlaylist] = useState([]);
     const [isPublic, setIsPublic] = useState(true); 
+    const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
     const handleResize = () => {
@@ -179,12 +182,13 @@ if (isMobile) {
                 <p className="text-gray-500">{playlist.isPublic ? "Public" : "Private"} · Playlist</p>
                 <p className="text-gray-500">Updated {new Date(playlist.updatedAt).toLocaleDateString()}</p>
                 <p className="text-gray-500">Total: {Math.ceil(playlist.totalDuration / 60)} mins</p>
-                <a
-                  href={`/playlist/${playlist._id}`}
+                <Link to={`/user/playlistBox/${playlist._id}`}>
+                <div
                   className="text-blue-500 hover:underline inline-block pt-[2px]"
                 >
                   View full playlist
-                </a>
+                </div>
+                </Link>
               </div>
             </div>
           ))}
@@ -294,12 +298,9 @@ else{
   <p className="text-gray-500">
     Total: {Math.ceil(playlist.totalDuration / 60)} mins
   </p>
-  <a
-    href={`/playlist/${playlist._id}`}
-    className="text-blue-500 hover:underline font-medium inline-block pt-[2px]"
-  >
-    View full playlist
-  </a>
+<button onClick={() => navigate(`/user/playlistBox/${playlist._id}`)}>
+  View full playlist
+</button>
 </div>
 
     </div>

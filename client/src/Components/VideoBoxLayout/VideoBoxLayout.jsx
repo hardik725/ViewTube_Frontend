@@ -45,19 +45,28 @@ const VideoBoxLayout = ({ video }) => {
 
     {/* Info */}
     <div className="flex items-start px-2 py-2 gap-2">
+      {avatar && (
       <img
         src={avatar}
         alt="Avatar"
         className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover"
       />
+      )
+      }
       <div className="flex flex-col overflow-hidden">
         <h3 className="text-sm sm:text-base text-gray-200 font-semibold truncate max-w-full">
-          {description}
+          {title}
         </h3>
+        {owner && (
         <p className="text-xs sm:text-sm text-gray-400 truncate max-w-full">
           {owner}
         </p>
-        <p className="text-xs sm:text-sm text-gray-500">{views} views</p>
+        )}
+        {
+          views && (
+            <p className="text-xs sm:text-sm text-gray-500">{views} views</p>
+          )
+        }
       </div>
     </div>
   </div>

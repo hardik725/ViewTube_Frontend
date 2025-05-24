@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { faComment, faThumbsUp, faTimes, faSliders, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const VideoPlayer = () => {
+const VideoPlayer = ({id}) => {
   const { videoId } = useParams();
   const [video, setVideo] = useState(null);
   const [totalLikes, setTotalLikes] = useState([]);
@@ -18,7 +18,7 @@ const VideoPlayer = () => {
   const [channelSubscribed, setChannelSubscribed] = useState(false);
   const [userPlaylist, setUserPlaylist] = useState([]);
   const [playlistForm, setPlaylistForm] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -47,7 +47,7 @@ const VideoPlayer = () => {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    videoId: videoId
+                    videoId: videoId || id
                 })
             });
             if(response.ok){
@@ -79,7 +79,7 @@ const VideoPlayer = () => {
 
 const postComment = async (e) => {
   e.preventDefault();
-  const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/comment/add/${videoId}`, {
+  const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/comment/add/${videoId || id}`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -134,7 +134,7 @@ const toggleLike = async () => {
   const params = new URLSearchParams({ type: "video" });
 
   try {
-    const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/like/toggleLike/${videoId}?${params.toString()}`, {
+    const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/like/toggleLike/${videoId || id}?${params.toString()}`, {
       method: 'POST',
       credentials: 'include',
       headers: { "Content-Type": "application/json" }
@@ -189,8 +189,8 @@ const toggleLike = async () => {
   useEffect(() => {
     const getVideo = async () => {
       try {
-        const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getVideoById/${videoId}`);
-        const response2 = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/incViewCound/${videoId}`,{
+        const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/getVideoById/${videoId || id}`);
+        const response2 = await fetch(`https://viewtube-xam7.onrender.com/api/v1/video/incViewCound/${videoId || id}`,{
           credentials: 'include',
         });
 
@@ -219,8 +219,8 @@ const toggleLike = async () => {
       }
     };
 
-    if (userId && videoId) getVideo();
-  }, [userId, videoId]);
+    if (userId && (videoId || id)) getVideo();
+  }, [userId, videoId, id]);
 
   if (!video) {
     return <div className="text-white text-center mt-10">Video is loading...</div>;

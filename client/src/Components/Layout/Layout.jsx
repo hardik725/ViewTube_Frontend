@@ -222,7 +222,7 @@ const Layout = () => {
     </h2>
 
     {inputStatus.map((status, index) => (
-      status && (
+      status && index<11 && (
         <div key={index} className="space-y-2">
           {(() => {
             const labelMap = [

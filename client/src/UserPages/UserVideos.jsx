@@ -17,6 +17,8 @@ const UserVideos = () => {
   const [description, setDescription] = useState('');
   const [userVideos, setUserVideos] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
     const handleResize = () => {
@@ -139,6 +141,9 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (uploadingVideo) return;
+    setUploadingVideo(true);
+
     try{
         const formData = new FormData();
         formData.append('title',title);
@@ -162,9 +167,12 @@ useEffect(() => {
             setTitle('');
             setDescription('');
             alert("Video Uploaded Successfully");
+            setUploadingVideo(false);
         }
     }catch(error){
         console.log(error);
+        alert("Video was not able Uploaded");
+        setUploadingVideo(false);
     }
   };
 
@@ -245,12 +253,18 @@ useEffect(() => {
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          className="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-md"
-        >
-          Upload Video
-        </button>
+<button
+  type="submit"
+  className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-md ${
+    uploadingVideo
+      ? "bg-purple-300 cursor-not-allowed"
+      : "bg-purple-600 hover:bg-purple-700"
+  }`}
+  disabled={uploadingVideo}
+>
+  {uploadingVideo ? "Video is being Uploaded" : "Upload Video"}
+</button>
+
       </form>
       <div>
       <h1 className="text-3xl font-bold mb-6 border-b border-gray-700 pb-2 mt-6">

@@ -205,7 +205,7 @@ const Layout = () => {
   </div>
   </>
     )}
-  <div className={`fixed bottom-6 right-6 z-50 ${healthCheckForm ? "hidden" : ""}`}>
+  <div className={`fixed bottom-[80px] right-6 z-50 ${healthCheckForm ? "hidden" : ""}`}>
     <button
       onClick={openHealthCheckForm} // Replace with navigation or modal open logic
       className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-full shadow-lg transition duration-300"

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const ChannelPlaylist = ({channel}) => {
     const [channelId, setChannelId] = useState(channel._id);
@@ -55,12 +56,12 @@ const ChannelPlaylist = ({channel}) => {
   <p className="text-gray-500">
     Total: {Math.ceil(playlist.totalDuration / 60)} mins
   </p>
-  <a
-    href={`/playlist/${playlist._id}`}
+  <Link
+    to={`/user/playlistBox/${playlist._id}`}
     className="text-blue-500 hover:underline font-medium inline-block pt-[2px]"
   >
     View full playlist
-  </a>
+  </Link>
 </div>
 
     </div>

@@ -40,8 +40,8 @@ const Navbar = () => {
     e.preventDefault();
     localStorage.setItem('query',JSON.stringify(searchText));
     setSearchText('');
-
     window.dispatchEvent(new Event('updatedQuery'));
+    navigate("/user");
   }
 
   useEffect(() => {
@@ -73,6 +73,7 @@ return (
           src="https://i.ibb.co/B5wvYWPN/Screenshot-2025-05-13-183427.png"
           alt="ViewTube Logo"
           className="h-12 w-auto"
+          onClick={() => {navigate("/user")}}
         />
       </div>
 
@@ -130,6 +131,7 @@ return (
       src="https://i.ibb.co/B5wvYWPN/Screenshot-2025-05-13-183427.png"
       alt="ViewTube Logo"
       className="h-20 w-auto"
+      onClick={() => {navigate("/user")}}
     />
   </div>
 

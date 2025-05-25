@@ -302,7 +302,7 @@ if (isMobile) {
   {/* Bio Display Mode */}
   {!editBio && (
     <>
-  <p className="text-[11px] text-gray-300 leading-relaxed tracking-wide indent-4">
+  <p className="text-[11px] text-gray-300 leading-relaxed tracking-wide indent-4 ">
     {userBio || "This channel hasn't added a bio yet. Check back later for more info!"}
   </p>
 

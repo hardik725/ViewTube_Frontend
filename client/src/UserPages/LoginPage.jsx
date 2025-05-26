@@ -6,6 +6,7 @@ const LoginPage = () => {
     const [password,setPassword] = useState('');
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [signIn, setSignIn] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -19,6 +20,7 @@ const LoginPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setSignIn(true);
         // this ensures that the page is not reloaded when form is submitted
         try{
         const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/login`,{
@@ -38,8 +40,14 @@ const LoginPage = () => {
             localStorage.setItem('user',JSON.stringify(output.data.user));
             alert("User logged In Successfully!");
             navigate('/user', {replace: true});
+            setSignIn(false);
+        }else{
+          setSignIn(false);
+          alert("There was error while Signing In");
         }
     }catch(error){
+      setSignIn(false);
+      alert("There was error while signing In");
         console.log(error);
     }
     }
@@ -88,12 +96,16 @@ const LoginPage = () => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="w-full border border-white text-white py-2 rounded-xl hover:bg-white hover:text-black transition duration-300 font-semibold"
-      >
-        sign in
-      </button>
+<button
+  type="submit"
+  disabled={signIn}
+  className={`w-full border border-white text-white py-2 rounded-xl transition duration-300 font-semibold ${
+    signIn ? 'bg-green-300 text-black cursor-not-allowed' : 'hover:bg-white hover:text-black'
+  }`}
+>
+  {signIn ? 'Signing In...' : 'Sign In'}
+</button>
+
     </form>
     <div className="mt-6 text-center">
       <p className="text-sm text-gray-600">
@@ -153,12 +165,18 @@ const LoginPage = () => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200 font-semibold"
-      >
-        Login
-      </button>
+<button
+  type="submit"
+  disabled={signIn}
+  className={`w-full py-2 rounded-lg transition duration-200 font-semibold ${
+    signIn
+      ? 'bg-blue-300 text-white cursor-not-allowed'
+      : 'bg-blue-600 text-white hover:bg-blue-700'
+  }`}
+>
+  {signIn ? 'Logging in...' : 'Login'}
+</button>
+
     </form>
 
     <div className="mt-6 text-center">

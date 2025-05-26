@@ -10,6 +10,7 @@ const SignUp = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
+  const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   useEffect(() => {
@@ -37,7 +38,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setSignUp(true);
     // Constructing FormData for file + text upload
     const formData = new FormData();
     formData.append("fullname", fullname);
@@ -53,12 +54,19 @@ const SignUp = () => {
         credentials: 'include',
         body: formData, // No need to set content-type manually
       });
-
-      const data = await response.json();
-      console.log(data);
+      if(response.ok){
+             const data = await response.json();
+             alert("User created Successfully");
+             setSignUp(false);
+             navigate("/");
+      }else{
+        setSignUp(false);
+        alert("There was an error while creating an account");
+      }
     } catch (err) {
       console.error("Registration failed:", err);
       alert("Something went wrong.");
+      setSignUp(false);
     }
   };
   if(isMobile){
@@ -155,12 +163,18 @@ const SignUp = () => {
   </label>
 </div>
 
-      <button
-        type="submit"
-        className="w-full bg-white text-black text-sm font-medium py-2 rounded-lg hover:bg-opacity-90 transition duration-200"
-      >
-        Sign Up
-      </button>
+<button
+  type="submit"
+  disabled={signUp}
+  className={`w-full text-sm font-medium py-2 rounded-lg transition duration-200 ${
+    signUp
+      ? 'bg-gray-200 text-black cursor-not-allowed'
+      : 'bg-white text-black hover:bg-opacity-90'
+  }`}
+>
+  {signUp ? 'Signing Up...' : 'Sign Up'}
+</button>
+
     </form>
 
     <div className="mt-4 text-center">
@@ -262,12 +276,18 @@ const SignUp = () => {
             )}
           </div>
 
-          <button
-            type="submit"
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition duration-300"
-          >
-            Sign Up
-          </button>
+<button
+  type="submit"
+  disabled={signUp}
+  className={`font-semibold py-2 rounded-lg transition duration-300 w-full ${
+    signUp
+      ? 'bg-gradient-to-r from-blue-400 to-indigo-400 text-white cursor-not-allowed'
+      : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90'
+  }`}
+>
+  {signUp ? 'Signing Up...' : 'Sign Up'}
+</button>
+
         </form>
 
         <div className="mt-6 text-center">

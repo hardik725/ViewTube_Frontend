@@ -4,6 +4,7 @@ import {
   faHeart,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 const TweetsPage = () => {
   const [tweet, setTweet] = useState('');
@@ -169,6 +170,13 @@ const getTweet = async (userId) => {
             Post
           </button>
         </div>
+      </div>
+      <div className="flex justify-start mb-2">
+          <Link to="/user/userTweets"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition"
+          >
+            My Tweets
+          </Link>
       </div>
 
       {/* Tweets List */}

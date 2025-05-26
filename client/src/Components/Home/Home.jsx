@@ -9,6 +9,8 @@ const Home = () => {
   const [videoFiles, setVideoFiles] = useState([]);
   const [page, setPage] = useState(1);
   const { logout } = useContext(AuthContext);
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortType, setSortType] = useState('desc');
 
   const getVideoFiles = async () => {
     const givenQuery = JSON.parse(localStorage.getItem('query'));
@@ -22,6 +24,8 @@ const Home = () => {
       query: query,
       page: page,
       limit: 12,
+      sortBy: sortBy,
+      sortType: sortType,
     });
 
     try {
@@ -52,7 +56,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('updatedQuery', updateVideoFiles);
     };
-  }, [page]);
+  }, [page,sortBy,sortType]);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -65,7 +69,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-black text-white md:px-4 px-2 py-6">
       {/* Header */}
-<div className="relative w-full md:max-w-6xl mx-auto mb-8">
+<div className="relative w-full md:max-w-6xl mx-auto mb-4">
   <div className="flex items-center justify-between bg-white/5 backdrop-blur-md border border-white/10 shadow-md p-2 rounded-xl">
     <div className="flex items-center gap-4">
       {userAvatar && (
@@ -92,6 +96,36 @@ const Home = () => {
   </div>
 </div>
 
+<div className="flex flex-row gap-4 md:gap-6 text-gray-800 mb-6 md:items-center">
+  <div className="flex flex-col w-full md:w-auto">
+    <label htmlFor="sortBy" className="mb-1 text-sm font-medium text-white">Sort By</label>
+    <select
+      id="sortBy"
+      name="sortBy"
+      value={sortBy}
+      onChange={(e) => setSortBy(e.target.value)}
+      className="px-4 py-2 w-full md:w-48 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+    >
+      <option value="duration">Duration</option>
+      <option value="createdAt">Created At</option>
+      <option value="views">Views</option>
+    </select>
+  </div>
+
+  <div className="flex flex-col w-full md:w-auto">
+    <label htmlFor="sortType" className="mb-1 text-sm font-medium text-white">Order</label>
+    <select
+      id="sortType"
+      name="sortType"
+      value={sortType}
+      onChange={(e) => setSortType(e.target.value)}
+      className="px-4 py-2 w-full md:w-48 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+    >
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+  </div>
+</div>
 
       {/* Videos */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

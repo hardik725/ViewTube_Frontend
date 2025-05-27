@@ -12,6 +12,7 @@ const TweetsPage = () => {
   const [page, setPage] = useState(1);
   const [user, setUser] = useState({});
   const [tweetLiked, setTweetLiked] = useState([]);
+  const [postTweet, setPostTweet] = useState(false);
 
   // here a function to toggle Like
 const toggleLike = async (idx, tweetId) => {
@@ -66,6 +67,7 @@ const toggleLike = async (idx, tweetId) => {
   // here this is function to post a tweet
 const handlePost = async (e) => {
   e.preventDefault();
+  setPostTweet(true);
   
   if (!tweet.trim()) {
     alert("Please Write a Tweet to Post");
@@ -104,9 +106,14 @@ const handlePost = async (e) => {
 
       // Also add `false` to tweetLiked
       setTweetLiked(prev => [false, ...prev]);
+      setPostTweet(false);
+    }else{
+      alert("Tweet was not Posted.");
+      setPostTweet(false);
     }
   } catch (error) {
-    console.log(error);
+    alert("Tweet was not Posted");
+    setPostTweet(false);
   }
 };
 
@@ -165,9 +172,15 @@ const getTweet = async (userId) => {
         <div className="flex justify-end mt-2">
           <button
             onClick={handlePost}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition"
+            className={`text-white font-semibold px-4 py-2 rounded transition
+              ${
+                postTweet
+                ? 'bg-blue-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            disabled={postTweet}
           >
-            Post
+            {postTweet ? "Posting" : "Post"}
           </button>
         </div>
       </div>

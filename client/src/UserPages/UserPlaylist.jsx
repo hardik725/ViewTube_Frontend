@@ -12,6 +12,7 @@ const UserPlaylist = () => {
     const [isPublic, setIsPublic] = useState(true); 
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [creatingPlaylist, setCreatingPlaylist] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -54,6 +55,7 @@ const UserPlaylist = () => {
 
 
     const handleSubmit = async (e) => {
+      setCreatingPlaylist(true);
         e.preventDefault();      
         try{
             const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/playlist/create`,{
@@ -75,8 +77,14 @@ const UserPlaylist = () => {
                 setIsPublic(true);
                 window.dispatchEvent(new Event('updatePlaylist'))
                 loadPlaylist();
+                setCreatingPlaylist(false);
+            }else{
+              alert("There was an error in creating the Playlist.");
+              setCreatingPlaylist(false);
             }
         }catch(error){
+          setCreatingPlaylist(false);
+          alert("There was an error in creating the Playlist.")
         }
     }
 if (isMobile) {
@@ -139,12 +147,18 @@ if (isMobile) {
               />
               <span>Make Public</span>
             </label>
-            <button
-              type="submit"
-              className="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm font-medium"
-            >
-              Create Playlist
-            </button>
+<button
+  type="submit"
+  disabled={creatingPlaylist}
+  className={`w-full py-2 rounded text-sm font-medium transition duration-300 ${
+    creatingPlaylist
+      ? 'bg-blue-400 cursor-not-allowed'
+      : 'bg-blue-600 hover:bg-blue-700'
+  } text-white`}
+>
+  {creatingPlaylist ? 'Creating...' : 'Create Playlist'}
+</button>
+
           </form>
         </div>
       )}
@@ -256,12 +270,18 @@ else{
           <span>Make Public</span>
         </label>
 
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
-        >
-          Create Playlist
-        </button>
+<button
+  type="submit"
+  disabled={creatingPlaylist}
+  className={`px-4 py-2 rounded text-white transition duration-300 ${
+    creatingPlaylist
+      ? 'bg-blue-400 cursor-not-allowed'
+      : 'bg-blue-600 hover:bg-blue-700'
+  }`}
+>
+  {creatingPlaylist ? 'Creating...' : 'Create Playlist'}
+</button>
+
       </form>
     </div>
   )

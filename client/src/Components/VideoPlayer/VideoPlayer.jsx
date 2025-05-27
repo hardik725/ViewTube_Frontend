@@ -19,6 +19,9 @@ const VideoPlayer = ({id}) => {
   const [userPlaylist, setUserPlaylist] = useState([]);
   const [playlistForm, setPlaylistForm] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [addPlaylist, setAddPlaylist] = useState(false);
+  const [subButton, setSubButton] = useState(false);
+  const [addComment, setAddComment] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -39,6 +42,8 @@ const VideoPlayer = ({id}) => {
   }, [])
 
     const addToPlaylist = async (playlistId) => {
+      setAddPlaylist(true);
+      setPlaylistForm(false);
         try{
             const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/playlist/addVideo/${playlistId}`,{
                 method: 'POST',
@@ -53,10 +58,14 @@ const VideoPlayer = ({id}) => {
             if(response.ok){
               alert("Video Succesfully added to the playlist");
               window.dispatchEvent(new Event('updatePlaylist'));
-              setPlaylistForm(false);
+              setAddPlaylist(false);
+            }else{
+              alert("Unable to add Video to Playlist.")
+              setAddPlaylist(false);
             }
         }catch(error){
-            console.log(error);
+            alert("Unable to add video to Playlist");
+            setAddPlaylist(false);
         }
     }
 
@@ -78,6 +87,7 @@ const VideoPlayer = ({id}) => {
 };
 
 const postComment = async (e) => {
+  setAddComment(true);
   e.preventDefault();
   const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/comment/add/${videoId || id}`, {
     method: 'POST',
@@ -106,6 +116,10 @@ const postComment = async (e) => {
     setTotalComments(prev => [...prev, newComm]);
     setNewComment('');
     alert("Comment has been added.");
+    setAddComment(false);
+  }else{
+    alert("Error while adding the comment.");
+    setAddComment(false);
   }
 };
 
@@ -168,6 +182,7 @@ const toggleLike = async () => {
   }, []);
 
   const toggleSubscription = async () => {
+    setSubButton(true);
     try{
       const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/subscription/toggle/${video.owner_id}`,{
         method: 'POST',
@@ -178,11 +193,18 @@ const toggleLike = async () => {
       });
 
       if(response.ok){
+        const data = await response.json();
         setChannelSubscribed(prev => !prev);
         window.dispatchEvent(new Event('updatedSubChannels'));
+        alert(data.message);
+        setSubButton(false);
+      }else{
+        alert("There was an Error.");
+        setSubButton(false);
       }
     }catch(error){
-      console.log(error);
+      alert("There was an error");
+      setSubButton(false);
     }
   }
 
@@ -233,6 +255,7 @@ return (
   <video
     src={video.videoFile}
     controls
+    autoPlay
     className="w-full h-full object-contain"
   />
 </div>
@@ -243,12 +266,22 @@ return (
       <h1 className="text-xl font-bold">{video.title}</h1>
 
       <div className="relative">
-        <button
-          onClick={() => setPlaylistForm(!playlistForm)}
-          className="w-full py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-        >
-          Add to Playlist
-        </button>
+<button
+  onClick={() => {
+    if (!addPlaylist) setPlaylistForm(!playlistForm);
+  }}
+  disabled={addPlaylist}
+  className={`w-full py-2 text-white rounded-md transition duration-300 ${
+    addPlaylist ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-700'
+  }`}
+>
+  {addPlaylist ? (
+    <span className="animate-pulse">Adding...</span>
+  ) : (
+    'Add to Playlist'
+  )}
+</button>
+
 
         {playlistForm && (
           <div className="absolute top-full left-0 z-50 bg-white border border-gray-300 shadow-lg rounded-sm w-full max-h-40 overflow-y-auto">
@@ -291,6 +324,7 @@ return (
           channelSubscribed ? "bg-red-600" : "bg-gray-600"
         }`}
         onClick={toggleSubscription}
+        disabled={subButton}
       >
         {channelSubscribed ? "Subscribed" : "Subscribe"}
       </button>
@@ -338,12 +372,16 @@ return (
         className="w-full rounded-full px-4 py-2 text-black"
       />
       {newComment && (
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2"
-        >
-          Add Comment
-        </button>
+<button
+  type="submit"
+  disabled={addComment}
+  className={`bg-blue-600 text-white rounded-md px-4 py-2 transition duration-200 ${
+    addComment ? 'bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'
+  }`}
+>
+  {addComment ? 'Posting...' : 'Add Comment'}
+</button>
+
       )}
     </form>
 
@@ -434,6 +472,7 @@ return (
       <video
         src={video.videoFile}
         controls
+        autoPlay
         className="w-full h-[60vh] object-contain rounded-lg"
       />
     </div>
@@ -444,12 +483,22 @@ return (
     <h1 className="text-3xl font-bold">{video.title}</h1>
   {/* here we will put a button add to playlist*/ }
 <div className="relative inline-block">
-  <button
-    onClick={() => setPlaylistForm(!playlistForm)}
-    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200"
-  >
-    Add to Playlist
-  </button>
+<button
+  onClick={() => {
+    if (!addPlaylist) setPlaylistForm(!playlistForm);
+  }}
+  disabled={addPlaylist}
+  className={`px-4 py-2 rounded-md text-white transition duration-200 ${
+    addPlaylist ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-700'
+  }`}
+>
+  {addPlaylist ? (
+    <span className="animate-pulse">Adding...</span>
+  ) : (
+    'Add to Playlist'
+  )}
+</button>
+
 
   {playlistForm && (
     <div className="absolute top-full left-0 z-50 bg-white border border-gray-300 shadow-lg rounded-sm p-1 w-[134px]">
@@ -494,7 +543,7 @@ return (
     </div>
   </div>
   {/* Right side: subscribe button */}
-  <button className={`${!channelSubscribed ? "bg-gray-600" : "bg-red-600"} p-3 rounded-sm`} onClick={toggleSubscription}>
+  <button className={`${!channelSubscribed ? "bg-gray-600" : "bg-red-600"} p-3 rounded-sm`} onClick={toggleSubscription} disabled={subButton}>
     <p className="text-xl">{channelSubscribed ? "Subscribed" : "Subscribe"}</p>
   </button>
 </div>
@@ -553,12 +602,16 @@ return (
 
   {/* Add Comment Button */}
   {newComment && (
-    <button
-      type="submit"
-      className='bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 w-1/6 text-center transition duration-150'
-    >
-      Add Comment
-    </button>
+<button
+  type="submit"
+  disabled={addComment}
+  className={`bg-blue-600 text-white rounded-md px-4 py-2 w-1/6 text-center transition duration-150 ${
+    addComment ? 'bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-700'
+  }`}
+>
+  {addComment ? 'Posting...' : 'Add Comment'}
+</button>
+
   )}
 </form>
 {totalComments && totalComments.length > 0 && (

@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import { Pencil } from 'lucide-react';
 import {
   faXmark,
-  faUpload
+  faUpload,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -23,6 +24,22 @@ const Settings = () => {
     const [covIm, setCovIm] = useState(null);
     const avatarRef = useRef(null);
     const coverImageRef = useRef(null);
+    const [changing, setChanging] = useState(Array(6).fill(false));
+
+    const handleButton = (index,type) => {
+      if(type==="on"){
+      setChanging((prev) => {
+        const updated = Array(6).fill(false);
+        updated[index] = true;
+        return updated;
+      })
+    }else if(type==="off"){
+      setChanging((prev) => {
+        const updated = Array(6).fill(false);
+        return updated;
+      })
+    }
+    }
 
     const avatarPreview = (e) => {
         const avat = e.target.files[0];
@@ -43,6 +60,7 @@ const Settings = () => {
     }
 
 const uploadAvatar = async (e) => {
+  handleButton(4,"on");
   e.preventDefault();
   
 
@@ -65,19 +83,21 @@ const uploadAvatar = async (e) => {
       setUserDetails(result.data);
       alert('✅ Avatar updated successfully!');
       window.dispatchEvent(new Event('userUpdated'));
+      handleButton(4,"off");
     } else {
       alert(`❌ Failed to update avatar: ${result.message || 'Unknown error'}`);
+      handleButton(4,"off");
     }
   } catch (error) {
     console.error('Upload Avatar Error:', error);
     alert('❌ An error occurred while updating the avatar.');
+    handleButton(4,"off");
   }
 };
 
 const uploadCoverImage = async (e) => {
   e.preventDefault();
-  
-
+  handleButton(5,"on");
   try {
     const formData = new FormData();
     formData.append("coverImage",covIm);
@@ -97,12 +117,15 @@ const uploadCoverImage = async (e) => {
       setUserDetails(result.data);
       alert('✅ CoverImage updated successfully!');
       window.dispatchEvent(new Event('userUpdated'));
+      handleButton(5,"off");
     } else {
       alert(`❌ Failed to update coverImage: ${result.message || 'Unknown error'}`);
+      handleButton(5,"off");
     }
   } catch (error) {
     console.error('Upload CoverImage Error:', error);
     alert('❌ An error occurred while updating the coverImage.');
+    handleButton(5,"off");
   }
 };
 
@@ -119,10 +142,13 @@ const uploadCoverImage = async (e) => {
 
     if (atrib === "username") {
         dataToSend.username = username;
+        handleButton(1,"on");
     } else if (atrib === "fullname") {
         dataToSend.fullname = fullname;
+        handleButton(0,"on");
     } else if (atrib === "email") {
         dataToSend.email = email;
+        handleButton(2,"on");
     }
         console.log(atrib);
 
@@ -142,15 +168,22 @@ const uploadCoverImage = async (e) => {
                 setUserDetails(output.data);
                 window.dispatchEvent(new Event('userUpdated'));
                 alert(`${atrib} has been successfully updated.`);
+                handleButton(1,"off");
+            }else{
+              handleButton(1,"off");
+              alert("There was an error while updating the details of the user");
             }
         }catch(error){
             console.log(error);
+            alert("There was an error while updated the details of the user");
+            handleButton(1,"off");
         }
     }
 
     // User Password Change Function
     const changePassword = async (e) => {
         e.preventDefault();
+        handleButton(3,"on");
         try{
             const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/change-password`,{
                 method: 'POST',
@@ -167,9 +200,15 @@ const uploadCoverImage = async (e) => {
                 alert("User Password has been Successfully Changed");
                 setOldPassword('');
                 setNewPassword('');
+                handleButton(3,"off");
+            }else{
+              alert("There was an error while changing the password");
+              handleButton(3,"off");
             }
         }catch(error){
             console.log(error);
+            alert("There was an error while changing the Password");
+            handleButton(3,"off");
         }
     }
   return (
@@ -203,7 +242,18 @@ const uploadCoverImage = async (e) => {
           {fullname && (
             <>
               <FontAwesomeIcon icon={faXmark} className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => setFullname("")} />
-              <FontAwesomeIcon icon={faUpload} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => submitForm({ atrib: "fullname" })} />
+<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+  <FontAwesomeIcon
+    icon={changing[0] ? faSpinner : faUpload}
+    spin={changing[0]}
+    className="text-gray-400 hover:text-white cursor-pointer"
+    onClick={() => {
+      if (!changing[0]) submitForm({ atrib: "fullname" });
+    }}
+  />
+</div>
+
+
             </>
           )}
         </div>
@@ -233,7 +283,16 @@ const uploadCoverImage = async (e) => {
           {username && (
             <>
               <FontAwesomeIcon icon={faXmark} className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => setUsername("")} />
-              <FontAwesomeIcon icon={faUpload} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => submitForm({ atrib: "username" })} />
+<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+  <FontAwesomeIcon
+    icon={changing[1] ? faSpinner : faUpload}
+    spin={changing[1]}
+    className="text-gray-400 hover:text-white cursor-pointer"
+    onClick={() => {
+      if (!changing[1]) submitForm({ atrib: "username" });
+    }}
+  />
+</div>
             </>
           )}
         </div>
@@ -263,7 +322,16 @@ const uploadCoverImage = async (e) => {
           {email && (
             <>
               <FontAwesomeIcon icon={faXmark} className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => setEmail("")} />
-              <FontAwesomeIcon icon={faUpload} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => submitForm({ atrib: "email" })} />
+<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+  <FontAwesomeIcon
+    icon={changing[2] ? faSpinner : faUpload}
+    spin={changing[2]}
+    className="text-gray-400 hover:text-white cursor-pointer"
+    onClick={() => {
+      if (!changing[2]) submitForm({ atrib: "email" });
+    }}
+  />
+</div>
             </>
           )}
         </div>

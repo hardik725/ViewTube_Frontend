@@ -95,7 +95,7 @@ const uploadAvatar = async (e) => {
   }
 };
 
-const uploadCoverImage = async (e) => {
+const uploadCover = async (e) => {
   e.preventDefault();
   handleButton(5,"on");
   try {
@@ -182,7 +182,6 @@ const uploadCoverImage = async (e) => {
 
     // User Password Change Function
     const changePassword = async (e) => {
-        e.preventDefault();
         handleButton(3,"on");
         try{
             const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/change-password`,{
@@ -366,7 +365,17 @@ const uploadCoverImage = async (e) => {
         {newpassword && (
           <>
             <FontAwesomeIcon icon={faXmark} className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={() => setNewPassword("")} />
-            <FontAwesomeIcon icon={faUpload} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer" onClick={changePassword} />
+<div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+  <FontAwesomeIcon
+    icon={changing[3] ? faSpinner : faUpload}
+    spin={changing[3]}
+    className="text-gray-400 hover:text-white cursor-pointer"
+    onClick={() => {
+      if (!changing[3]) changePassword();
+    }}
+  />
+</div>
+
           </>
         )}
       </div>

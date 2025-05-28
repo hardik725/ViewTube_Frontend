@@ -2,6 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../AuthProvider/AuthProvider';
 import VideoBoxLayout from '../VideoBoxLayout/VideoBoxLayout';
 import { Link } from 'react-router-dom';
+import {
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 const Home = () => {
   const [username, setUsername] = useState('');
@@ -11,6 +16,11 @@ const Home = () => {
   const { logout } = useContext(AuthContext);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortType, setSortType] = useState('desc');
+  const [loggingOut, setLoggingOut] = useState(false);
+const handleLogout = () => {
+  setLoggingOut(true);
+  logout();
+}
 
   const getVideoFiles = async () => {
     const givenQuery = JSON.parse(localStorage.getItem('query'));
@@ -86,11 +96,25 @@ const Home = () => {
     </div>
 
 <button
-  onClick={logout}
-  className="relative inline-flex items-center justify-center overflow-hidden text-white rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl group"
+  onClick={handleLogout}
+  className="relative inline-flex items-center justify-center overflow-hidden text-white rounded-xl px-2 py-2 text-[12px] font-semibold transition-all duration-300 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl group"
 >
   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></span>
-  Logout
+  {
+    loggingOut ? (
+      <>
+      <FontAwesomeIcon
+      icon={faSpinner}
+      spin
+      />
+      Logging Out
+      </>
+    ) : (
+      <>
+      Logout 
+      </>
+    )
+  }
 </button>
 
   </div>

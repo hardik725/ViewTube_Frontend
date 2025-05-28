@@ -1,3 +1,7 @@
+import {
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -100,10 +104,21 @@ const LoginPage = () => {
   type="submit"
   disabled={signIn}
   className={`w-full border border-white text-white py-2 rounded-xl transition duration-300 font-semibold ${
-    signIn ? 'bg-green-300 text-black cursor-not-allowed' : 'hover:bg-white hover:text-black'
+    signIn ? 'bg-black text-black cursor-not-allowed' : 'hover:bg-white hover:text-black'
   }`}
 >
-  {signIn ? 'Signing In...' : 'Sign In'}
+  {signIn ? (
+    <>
+    <FontAwesomeIcon
+    icon={faSpinner}
+    spin
+    className='mr-1'
+    />
+    Logging In
+    </>
+  ) : (
+    "Login In"
+  )}
 </button>
 
     </form>
@@ -168,13 +183,24 @@ const LoginPage = () => {
 <button
   type="submit"
   disabled={signIn}
-  className={`w-full py-2 rounded-lg transition duration-200 font-semibold ${
+  className={`w-full py-2 rounded-lg transition duration-200 font-semibold bg-blue-600 ${
     signIn
-      ? 'bg-blue-300 text-white cursor-not-allowed'
-      : 'bg-blue-600 text-white hover:bg-blue-700'
+      ? 'text-white cursor-not-allowed'
+      : 'text-white hover:bg-blue-700'
   }`}
 >
-  {signIn ? 'Logging in...' : 'Login'}
+  {signIn ? (
+    <>
+    <FontAwesomeIcon
+    icon={faSpinner}
+    spin
+    className='mr-1'
+    />
+    Logging In
+    </>
+  ) : (
+    "Login In"
+  )}
 </button>
 
     </form>

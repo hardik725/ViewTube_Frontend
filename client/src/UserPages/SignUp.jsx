@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const SignUp = () => {
   const [fullname, setFullname] = useState("");
@@ -172,7 +176,18 @@ const SignUp = () => {
       : 'bg-white text-black hover:bg-opacity-90'
   }`}
 >
-  {signUp ? 'Signing Up...' : 'Sign Up'}
+  {signUp ? (
+    <>
+    <FontAwesomeIcon
+    icon={faSpinner}
+    spin
+    className='mr-1'
+    />
+    Creating Account
+    </>
+  ) : (
+    "Create Account"
+  )}
 </button>
 
     </form>
@@ -285,7 +300,18 @@ const SignUp = () => {
       : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90'
   }`}
 >
-  {signUp ? 'Signing Up...' : 'Sign Up'}
+  {signUp ? (
+    <>
+    <FontAwesomeIcon
+    icon={faSpinner}
+    spin
+    className='mr-1'
+    />
+    Creating Account
+    </>
+  ) : (
+    "Create Account"
+  )}
 </button>
 
         </form>

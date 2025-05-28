@@ -401,13 +401,25 @@ const uploadCover = async (e) => {
           <span className="mt-2 text-blue-400 group-hover:underline">Upload New Avatar</span>
         </div>
       </div>
-      {avatar && (
-        <div className="text-center">
-          <button onClick={uploadAvatar} className="px-3 py-2 bg-white hover:bg-gray-600 hover:text-white text-black rounded-lg transition">
-            Submit Avatar
-          </button>
-        </div>
+{avatar && (
+  <div className="text-center">
+    <button
+      onClick={!changing[4] ? uploadAvatar : null}
+      className="px-3 py-2 bg-white hover:bg-gray-600 hover:text-white text-black rounded-lg transition flex items-center justify-center gap-2"
+      disabled={changing[4]}
+    >
+      {changing[4] ? (
+        <>
+          <FontAwesomeIcon icon={faSpinner} spin />
+          Uploading...
+        </>
+      ) : (
+        "Submit Avatar"
       )}
+    </button>
+  </div>
+)}
+
     </div>
 
     <hr className="border-zinc-700" />
@@ -429,8 +441,16 @@ const uploadCover = async (e) => {
       </div>
       {coverImage && (
         <div className="text-center">
-          <button onClick={uploadCover} className="px-3 py-2 bg-white hover:bg-gray-600 hover:text-white text-black rounded-lg transition">
-            Submit Cover
+          <button onClick={changing[5] ? null : uploadCover} className="px-3 py-2 bg-white hover:bg-gray-600 hover:text-white text-black rounded-lg transition"
+          disabled={changing[5]}>
+      {changing[5] ? (
+        <>
+          <FontAwesomeIcon icon={faSpinner} spin />
+          Uploading...
+        </>
+      ) : (
+        "Submit CoverImage"
+      )}
           </button>
         </div>
       )}

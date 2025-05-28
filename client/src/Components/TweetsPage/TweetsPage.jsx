@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import {
   faHeart,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
@@ -180,7 +181,15 @@ const getTweet = async (userId) => {
               }`}
             disabled={postTweet}
           >
-            {postTweet ? "Posting" : "Post"}
+            {postTweet ? (
+            <>
+          <FontAwesomeIcon icon={faSpinner} spin />
+          Posting...
+          </>
+            )
+            :(
+            "Post"
+          )}
           </button>
         </div>
       </div>

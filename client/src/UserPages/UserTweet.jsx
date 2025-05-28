@@ -4,7 +4,8 @@ import {
   faPenToSquare,
   faUpload,
   faBan,
-  faTrash
+  faTrash,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -13,6 +14,8 @@ const UserTweet = () => {
   const [tweets, setTweets] = useState([]);
   const [tweetEditStatus, setTweetEditStatus] = useState([]);
   const [editedTweet, setEditedTweet] = useState("");
+  const [deleting, setDeleting] = useState([]);
+  const [editing, setEditing] = useState([]);
 
   const handleEdit = (idx) => {
     setEditedTweet(tweets[idx].content);
@@ -40,7 +43,17 @@ const setTweet = (index, content) => {
   });
 };
 
+useEffect(() => {
+  setDeleting(Array(tweets.length).fill(false));
+  setEditing(Array(tweets.length).fill(false));
+}, [tweets.length]);
+
 const updatedTweet = async (tweetId, idx) => {
+  setEditing((prev) => {
+    const updated = [...prev];
+    updated[idx] = true;
+    return updated;
+  })
   try {
     const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/tweet/update/${tweetId}`, {
       method: 'POST',
@@ -63,8 +76,39 @@ const updatedTweet = async (tweetId, idx) => {
     }
   } catch (error) {
     console.error("Update error:", error);
+  } finally{
+    setEditing(Array(tweets.length).fill(false));
   }
 };
+
+const deleteTweet = async (tweetId, index) => {
+  setDeleting((prev) => {
+    const updated = [...prev];
+    updated[index] = true;
+    return updated;
+  });
+  try {
+    const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/tweet/delete/${tweetId}`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      setTweets((prev) => {
+        const updated = prev.filter((_, ind) => ind !== index);
+        return updated;
+      });
+      alert("Tweet has been deleted successfully");
+    } else {
+      alert("Unable to delete the tweet");
+    }
+  } catch (error) {
+    alert("Unable to delete the Tweet");
+  } finally {
+    setDeleting(Array(tweets.length).fill(false));
+  }
+};
+
 
 
   const getUserTweet = async (userId) => {
@@ -74,6 +118,7 @@ const updatedTweet = async (tweetId, idx) => {
       if (response.ok) {
         const output = await response.json();
         setTweets(output.data);
+        setDeleting(Array(output.data.length).fill(false));
         setTweetEditStatus(Array(output.data.length).fill(false));
       }
     } catch (error) {
@@ -135,20 +180,43 @@ const updatedTweet = async (tweetId, idx) => {
                     className="cursor-pointer hover:text-yellow-400"
                     onClick={() => handleEdit(idx)}
                   />
+                  { !deleting[idx] ? (
+                    <>
                   <FontAwesomeIcon
                     icon={faTrash}
                     className="cursor-pointer hover:text-red-500"
-                    onClick={() => console.log('Handle delete here')}
+                    onClick={() => deleteTweet(t._id, idx)}
                   />
+                  </>
+                  ) : (
+                    <>
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    spin
+                  />                    
+                    </>
+                  )
+                  }
                 </div>
               ) : (
                 <div className="mt-2 ml-2 text-xl flex flex-row space-x-4">
+                    { !editing[idx] ? (
+                      <>
                     <FontAwesomeIcon
                     icon={faUpload}
                     className="cursor-pointer hover:text-green-400"
                     onClick={() => updatedTweet(t._id, idx)}
                     />
-
+                    </>
+                    ) : (
+                      <>
+                    <FontAwesomeIcon
+                    icon={faSpinner}
+                    spin
+                    />
+                      </>
+                    )
+                    }
                   <FontAwesomeIcon
                     icon={faBan}
                     className="cursor-pointer hover:text-red-400"

@@ -4,6 +4,9 @@ import HomePage from '../ChannelPages/HomePage';
 import ChannelVideo from '../ChannelPages/ChannelVideo';
 import ChannelPlaylist from '../ChannelPages/ChannelPlaylist';
 import ChannelTweet from '../ChannelPages/ChannelTweet';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
 
 const ChannelPage = () => {
     const [channelData, setChannelData] = useState({});
@@ -15,6 +18,7 @@ const ChannelPage = () => {
     const [user, setUser] = useState({});
     const [isMobile, setIsMobile] = useState(window.innerWidth<768);
     const [options, setOptions] = useState([true,false,false,false]);
+    const navigate = useNavigate();
     useEffect(() => {
       const handleResize = () => {
         setIsMobile(window.innerWidth<768);
@@ -77,6 +81,17 @@ const ChannelPage = () => {
     }, [channelName])
 if (isMobile) {
   return (
+    <>
+  <div className={`fixed bottom-[150px] right-6 z-50 ${isSubscribed ? "" : "hidden"}`}>
+    <button
+      // onClick={openHealthCheckForm} // Replace with navigation or modal open logic
+      className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-full shadow-lg transition duration-300"
+      onClick={() => {navigate(`/user/chatbox/${channelData._id}`)}}
+    >
+      <FontAwesomeIcon icon={faComment} className='mr-2'/>
+      Chat
+    </button>
+  </div>    
     <div className="bg-black text-white rounded-lg shadow-md">
       {/* Cover Image */}
       <div className="relative h-40 w-full">
@@ -167,6 +182,7 @@ if (isMobile) {
       )
     }
     </div>
+    </>
   );
 }
 else{

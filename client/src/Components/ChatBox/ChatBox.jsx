@@ -29,6 +29,24 @@ const ChatBox = () => {
   }, [channelId]);
 
   useEffect(() => {
+    if(!user._id) return;
+
+    const handleMessage = (messageId) => {
+        setChannelChat(prev => prev.filter(msg => msg._id !== messageId));
+    }
+
+    socket.on("rdeletedMessage",handleMessage);
+
+    return () => {
+        socket.off("rdeletedMessage", handleMessage);
+    }
+  }, [user._id, channelId]);
+
+  useEffect(() => {
+    if(!user._id) return; 
+  })
+
+  useEffect(() => {
     if (!user._id) return;
 
     const handleMessage = (message) => {
@@ -46,6 +64,24 @@ const ChatBox = () => {
       socket.off("recievedMessage", handleMessage);
     };
   }, [user._id, channelId]);
+
+  const delMessage = async (messageId) => {
+    try{
+        const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/message/delete/${messageId}`,{
+            method: 'POST',
+            credentials: 'include',
+        });
+        if(response.ok){
+            const output = await response.json();
+            socket.emit("deleteMessage",output.data.messageId);
+            setChannelChat(prev => prev.filter(msg => msg._id !== messageId));
+        }else{
+            alert("Unable to delete the Message.");
+        }
+    }catch(error){
+        alert("Unable to delete the Message.");
+    }
+  }
 
 
   const getChannelChat = async (channelId) => {
@@ -113,6 +149,7 @@ const ChatBox = () => {
     const time = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     return (
+        <>
       <div
         key={idx}
         className={`flex items-end gap-2 my-2 ${isUser ? 'justify-end' : 'justify-start'}`}
@@ -136,6 +173,9 @@ const ChatBox = () => {
           />
         )}
       </div>
+      <button className='bg-red p-2' onClick={() => delMessage(msg._id)}>delete</button>
+      </>
+      
     );
   })}
 </div>

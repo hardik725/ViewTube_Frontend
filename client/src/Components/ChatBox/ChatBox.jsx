@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import {
+  faPenToSquare,
+  faEraser,
+  faFloppyDisk,
+  faCancel,
+  faSpinner,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const socket = io("https://viewtube-xam7.onrender.com");
 
@@ -12,8 +21,43 @@ const ChatBox = () => {
   const [channel, setChannel] = useState({});
   const [editButton, setEditButton] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [sendTyping, setSendTyping] = useState(false);
+
   const navigate = useNavigate();
 
+  useEffect(()=> {
+    if(newMessage.length && !sendTyping){
+      setSendTyping(true);
+      io.emit("typing",{
+        sender: user._id,
+        reciever: channelId,
+        typing: true,
+      });
+    }else if(!newMessage.length && sendTyping){
+      setSendTyping(false);
+      io.emit("typing",{
+        sender: user._id,
+        reciever: channelId,
+        typing: false,
+      });
+    }
+  }, [newMessage]);
+
+  useEffect(() => {
+    const handleTyping = (message) => {
+      if(message.reciever === user._id && message.sender === channelId){
+      setTyping(message.typing);
+      }
+    }
+
+    socket.on("usertyping",handleTyping);
+
+    return () => {
+      socket.off("usertyping",handleTyping);
+    }
+  },[user._id, channelId]);
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem('user'));
     if (localUser) {
@@ -170,6 +214,7 @@ useEffect(() => {
 
   const sendMessageHandler = async () => {
     if (!message.trim()) return;
+    setSending(true);
     try {
       const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/message/sendMessage`, {
         method: 'POST',
@@ -183,11 +228,15 @@ useEffect(() => {
       if (response.ok) {
         const output = await response.json();
         socket.emit("sendMessage", output.data);
+        setSending(false);
         setMessage('');
+      }else{
+        alert("Error while sending the Message");
+        setSending(false);
       }
     } catch (error) {
       alert("Unable to send the Message.");
-      console.log(error);
+      setSending(false);
     }
   };
 
@@ -208,9 +257,16 @@ useEffect(() => {
       </div>
       <button className='text-white w-1/5 text-center'
       onClick={() => navigate(`/user/channelPage/${channel.username}`)}>
-        Close
+        <FontAwesomeIcon
+        icon={faXmark}
+        className='text-[32px]'
+        />
       </button>
       </div>
+      {typing && (
+      <p className="text-sm italic text-green-500">Typing...</p>
+      )}
+
 <div className="chat-window text-white bg-gray-800 rounded p-4 mb-4 h-80 overflow-y-auto">
   {channelChat.map((msg, idx) => {
     const isUser = msg.sender === user._id;
@@ -219,7 +275,40 @@ useEffect(() => {
 
     return (
       <div key={idx} className={`flex flex-col gap-1 my-3 ${isUser ? 'items-end' : 'items-start'}`}>
-        <div className={`flex items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div className={`flex items-center gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div>
+        {isUser && (
+          <div className="flex gap-2 text-sm">
+            {!editButton[idx] ? (
+              <>
+              <FontAwesomeIcon
+              icon={faPenToSquare}
+              className="bg-yellow-500 px-1 py-[2px] rounded" onClick={() => openEditButton(idx)}
+              />
+              <FontAwesomeIcon
+              icon={faEraser}
+              className="bg-red-500 px-1 py-[2px] rounded" onClick={() => delMessage(msg._id)}
+              />
+              </>
+            ) : (
+              <>
+              <FontAwesomeIcon
+              icon={faFloppyDisk}
+                  className="bg-green-600 px-1 py-[2px] rounded"
+                  onClick={() => handleUpdateMessage(msg._id, idx)}
+              />
+              <FontAwesomeIcon
+              icon={faCancel}
+                  className="bg-gray-500 px-1 py-[2px] rounded"
+                  onClick={() => closeEditButton()}
+              />
+              </>
+            )}
+          </div>
+        )}
+        </div>
+        <div className='flex flex-col'>
+            <div className='flex flex-row-reverse gap-1 my-1'>
           <img src={avatar} alt="avatar" className="w-8 h-8 rounded-full" />
           <div className={`p-1 rounded-lg max-w-xs ${isUser ? 'bg-blue-400 text-right' : 'bg-gray-600 text-left'}`}>
             {editButton[idx] ? (
@@ -234,39 +323,12 @@ useEffect(() => {
             ) : (
               <div className='text-center'>{msg.content}</div>
             )}
-            <div className="text-xs text-gray-200 mt-[2px]">{time}</div>
-          </div>
+          </div>                
+            </div>
+            <div className="text-xs text-gray-200 mt-[2px] text-center">{time}</div>
         </div>
 
-        {isUser && (
-          <div className="flex gap-2 text-sm">
-            {!editButton[idx] ? (
-              <>
-                <button className="bg-yellow-500 px-1 py-[2px] rounded" onClick={() => openEditButton(idx)}>
-                  Edit
-                </button>
-                <button className="bg-red-500 px-1 py-[2px] rounded" onClick={() => delMessage(msg._id)}>
-                  Delete
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  className="bg-green-600 px-1 py-[2px] rounded"
-                  onClick={() => handleUpdateMessage(msg._id, idx)}
-                >
-                  Save
-                </button>
-                <button
-                  className="bg-gray-500 px-1 py-[2px] rounded"
-                  onClick={() => closeEditButton()}
-                >
-                  Cancel
-                </button>
-              </>
-            )}
-          </div>
-        )}
+        </div>
       </div>
     );
   })}
@@ -280,8 +342,16 @@ useEffect(() => {
           placeholder="Type a message..."
           className='flex-1 p-2 rounded border border-gray-300'
         />
-        <button onClick={sendMessageHandler} className='bg-white text-black p-2 rounded'>
+        <button onClick={sending ? null : sendMessageHandler} className='bg-white text-black p-2 rounded'>
+          {sending ? (
+            <FontAwesomeIcon
+            icon={faSpinner}
+            spin/>
+          ) : 
+          <>
           Send
+          </>
+          }
         </button>
       </div>
     </div>

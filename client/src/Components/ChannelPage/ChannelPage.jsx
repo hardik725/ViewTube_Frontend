@@ -187,6 +187,17 @@ if (isMobile) {
 }
 else{
 return (
+  <>
+  <div className={`fixed bottom-[150px] right-6 z-50 ${isSubscribed ? "" : "hidden"}`}>
+    <button
+      // onClick={openHealthCheckForm} // Replace with navigation or modal open logic
+      className="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-full shadow-lg transition duration-300"
+      onClick={() => {navigate(`/user/chatbox/${channelData._id}`)}}
+    >
+      <FontAwesomeIcon icon={faComment} className='mr-2'/>
+      Chat
+    </button>
+  </div>
   <div className="bg-black rounded-lg shadow-md text-white">
     {/* Cover Image */}
     <div className="relative h-80 w-full">
@@ -274,6 +285,7 @@ return (
       )
     }
   </div>
+  </>
 );
     }
 }

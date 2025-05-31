@@ -23,7 +23,7 @@ const ChatBox = () => {
   const [editButton, setEditButton] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
-const [typing, setTyping] = useState(true);
+const [typing, setTyping] = useState(false);
 const [sendTyping, setSendTyping] = useState(false);
 
 const navigate = useNavigate();
@@ -258,7 +258,7 @@ useEffect(() => {
       <img
       src={channel.avatar}
       alt="channel_Avatar"
-      className='w-12 h-12'
+      className='w-12 h-12 rounded-full'
       />
       <div className='flex flex-col ml-2'>
         <span className='text-lg font-bold text-white'>{channel.fullname}</span>

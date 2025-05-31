@@ -7,7 +7,8 @@ import {
   faFloppyDisk,
   faCancel,
   faSpinner,
-  faXmark
+  faXmark,
+  faCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -22,7 +23,7 @@ const ChatBox = () => {
   const [editButton, setEditButton] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
-const [typing, setTyping] = useState(false);
+const [typing, setTyping] = useState(true);
 const [sendTyping, setSendTyping] = useState(false);
 
 const navigate = useNavigate();
@@ -261,7 +262,7 @@ useEffect(() => {
       />
       <div className='flex flex-col ml-2'>
         <span className='text-lg font-bold text-white'>{channel.fullname}</span>
-        <span className='text-sm font-thin mb-4 text-white'>@{channel.username}</span>
+        <span className='text-sm font-thin mb-1 text-white'>@{channel.username}</span>
       </div>
       </div>
       <button className='text-white w-1/5 text-center'
@@ -273,7 +274,24 @@ useEffect(() => {
       </button>
       </div>
       {typing && (
-      <p className="text-sm italic text-green-500">Typing...</p>
+    <div className="flex items-center gap-1 mt-[1px] mb-2 px-2">
+      <span className="text-green-400 text-sm">Typing</span>
+      <FontAwesomeIcon
+        icon={faCircle}
+        className="text-green-400 animate-bounce text-[6px]"
+        style={{ animationDelay: "0s" }}
+      />
+      <FontAwesomeIcon
+        icon={faCircle}
+        className="text-green-400 animate-bounce text-[6px]"
+        style={{ animationDelay: "0.2s" }}
+      />
+      <FontAwesomeIcon
+        icon={faCircle}
+        className="text-green-400 animate-bounce text-[6px]"
+        style={{ animationDelay: "0.4s" }}
+      />
+    </div>
       )}
 
 <div className="chat-window text-white bg-gray-800 rounded p-4 mb-4 h-80 overflow-y-auto">

@@ -31,14 +31,14 @@ const navigate = useNavigate();
 useEffect(() => {
   if (newMessage.length && !sendTyping) {
     setSendTyping(true);
-    io.emit("typing", {
+    socket.emit("typing", {
       sender: user._id,
       reciever: channelId,
       typing: true,
     });
   } else if (!newMessage.length && sendTyping) {
     setSendTyping(false);
-    io.emit("typing", {
+    socket.emit("typing", {
       sender: user._id,
       reciever: channelId,
       typing: false,

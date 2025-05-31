@@ -22,42 +22,51 @@ const ChatBox = () => {
   const [editButton, setEditButton] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
-  const [typing, setTyping] = useState(false);
-  const [sendTyping, setSendTyping] = useState(false);
+const [typing, setTyping] = useState(false);
+const [sendTyping, setSendTyping] = useState(false);
 
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  useEffect(()=> {
-    if(newMessage.length && !sendTyping){
-      setSendTyping(true);
-      io.emit("typing",{
-        sender: user._id,
-        reciever: channelId,
-        typing: true,
-      });
-    }else if(!newMessage.length && sendTyping){
-      setSendTyping(false);
-      io.emit("typing",{
-        sender: user._id,
-        reciever: channelId,
-        typing: false,
-      });
+// Emit typing status
+useEffect(() => {
+  if (newMessage.length && !sendTyping) {
+    setSendTyping(true);
+    io.emit("typing", {
+      sender: user._id,
+      reciever: channelId,
+      typing: true,
+    });
+  } else if (!newMessage.length && sendTyping) {
+    setSendTyping(false);
+    io.emit("typing", {
+      sender: user._id,
+      reciever: channelId,
+      typing: false,
+    });
+  }
+}, [newMessage, sendTyping, user._id, channelId]);
+
+// Listen for typing events
+useEffect(() => {
+  const handleTyping = (message) => {
+    console.log("Received typing event:", message);
+
+    // Ensure typing is boolean and relevant to current user/channel
+    if (
+      message?.sender === channelId &&
+      message?.reciever === user._id
+    ) {
+      setTyping(Boolean(message.typing));
     }
-  }, [newMessage]);
+  };
 
-  useEffect(() => {
-    const handleTyping = (message) => {
-      if(message.reciever === user._id && message.sender === channelId){
-      setTyping(message.typing);
-      }
-    }
+  socket.on("usertyping", handleTyping);
 
-    socket.on("usertyping",handleTyping);
+  return () => {
+    socket.off("usertyping", handleTyping);
+  };
+}, [user._id, channelId]);
 
-    return () => {
-      socket.off("usertyping",handleTyping);
-    }
-  },[user._id, channelId]);
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem('user'));
     if (localUser) {

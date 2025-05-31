@@ -29,14 +29,14 @@ const navigate = useNavigate();
 
 // Emit typing status
 useEffect(() => {
-  if (newMessage.length && !sendTyping) {
+  if (message.length && !sendTyping) {
     setSendTyping(true);
     socket.emit("typing", {
       sender: user._id,
       reciever: channelId,
       typing: true,
     });
-  } else if (!newMessage.length && sendTyping) {
+  } else if (!message.length && sendTyping) {
     setSendTyping(false);
     socket.emit("typing", {
       sender: user._id,
@@ -44,7 +44,7 @@ useEffect(() => {
       typing: false,
     });
   }
-}, [newMessage, user._id, channelId]);
+}, [message, user._id, channelId]);
 
 // Listen for typing events
 useEffect(() => {

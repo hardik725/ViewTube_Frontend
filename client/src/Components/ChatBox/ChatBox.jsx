@@ -44,7 +44,7 @@ useEffect(() => {
       typing: false,
     });
   }
-}, [newMessage, sendTyping, user._id, channelId]);
+}, [newMessage, user._id, channelId]);
 
 // Listen for typing events
 useEffect(() => {

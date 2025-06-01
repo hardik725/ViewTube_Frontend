@@ -225,6 +225,9 @@ useEffect(() => {
   const sendMessageHandler = async () => {
     if (!message.trim()) return;
     setSending(true);
+    const params = new URLSearchParams({
+      purpose: "message",
+    });
     try {
       const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/message/sendMessage`, {
         method: 'POST',
@@ -235,9 +238,15 @@ useEffect(() => {
           content: message,
         }),
       });
-      if (response.ok) {
+      const response2 = await fetch(`https://viewtube-xam7.onrender.com/api/v1/notification/addNotification/${channelId}?${params}`,{
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (response.ok && response2.ok) {
         const output = await response.json();
+        const note = await response2.json();
         socket.emit("sendMessage", output.data);
+        socket.emit("notification",note.data);
         setSending(false);
         setMessage('');
       }else{

@@ -7,7 +7,9 @@ import ChannelTweet from '../ChannelPages/ChannelTweet';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 
+const socket = io("https://viewtube-xam7.onrender.com/api");
 const ChannelPage = () => {
     const [channelData, setChannelData] = useState({});
     const {channelName} = useParams();
@@ -53,6 +55,9 @@ const ChannelPage = () => {
     }
 
     const toggleSubscriber = async () => {
+      const params = new URLSearchParams({
+        purpose: "subscription",
+      });
         try{
             const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/subscription/toggle/${channelData._id}`,{
                 method: 'POST',
@@ -61,12 +66,20 @@ const ChannelPage = () => {
                     "Content-Type": "application/json",
                 }
             });
-            if(response.ok){
+
+            const response2 = await fetch(`https://viewtube-xam7.onrender.com/api/v1/notification/addNotification/${channelData._id}?${params}`,{
+              method: 'POST',
+              credentials: 'include',
+            });
+            if(response.ok && response2.ok){
                 const data = await response.json();
+                const note = await response2.json();
                 setSubscribed(prev => !prev);
                 window.dispatchEvent(new Event('updatedSubChannels'));
+                
                 if(data.message === "Channel Subscribed Successfully"){
                     setSubscribers(prev => prev+1);
+                    socket.emit("notification",note.data);
                 }else{
                     setSubscribers(prev => prev-1);
                 }

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { faComment, faThumbsUp, faTimes, faSliders, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { io } from 'socket.io-client';
+const socket = io("https://viewtube-xam7.onrender.com");
 
 const VideoPlayer = ({id}) => {
   const { videoId } = useParams();
@@ -182,6 +184,9 @@ const toggleLike = async () => {
   }, []);
 
   const toggleSubscription = async () => {
+    const params = new URLSearchParams({
+      purpose: "subscription",
+    });
     setSubButton(true);
     try{
       const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/subscription/toggle/${video.owner_id}`,{
@@ -192,10 +197,17 @@ const toggleLike = async () => {
         }
       });
 
-      if(response.ok){
+      const response2 = await fetch(`https://viewtube-xam7.onrender.com/api/v1/notification/addNotification/${video.owner_id}?${params}`,{
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if(response.ok && response2.ok){
         const data = await response.json();
+        const note = await response2.json();
         setChannelSubscribed(prev => !prev);
         window.dispatchEvent(new Event('updatedSubChannels'));
+        socket.emit("notification",note.data);
         alert(data.message);
         setSubButton(false);
       }else{

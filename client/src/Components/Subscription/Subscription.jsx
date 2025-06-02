@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import VideoBoxLayout from '../VideoBoxLayout/VideoBoxLayout';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Subscription = () => {
   const [subChannelId, setSubChannelId] = useState([]);
   const [videos, setVideos] = useState([]);
   const [subscribedChannel, setSubscribedChannel] = useState([]);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -66,11 +68,13 @@ if (isMobile) {
             <div key={idx} className="bg-[#1a1a1a] rounded-xl p-4 shadow-md">
               {subscribedChannel[idx] && (
                 <div className="flex items-center mb-3">
+                  <Link to={`/user/channelPage/${subscribedChannel[idx].username}`}>
                   <img
                     src={subscribedChannel[idx].avatar}
                     alt="Avatar"
                     className="w-10 h-10 rounded-full object-cover border border-white shadow-sm"
                   />
+                  </Link>
                   <div className="ml-3">
                     <h2 className="text-base font-semibold text-white truncate">{subscribedChannel[idx].fullname}</h2>
                     <p className="text-xs text-gray-400">@{subscribedChannel[idx].username}</p>
@@ -106,11 +110,13 @@ if (isMobile) {
             <div key={idx} className="bg-[#1a1a1a] rounded-2xl p-6 shadow-md transition hover:shadow-xl duration-300 ease-in-out">
               {subscribedChannel[idx] && (
                 <div className="flex items-center mb-4">
+                  <Link to={`/user/channelPage/${subscribedChannel[idx].username}`}>
                   <img
                     src={subscribedChannel[idx].avatar}
                     alt="Avatar"
                     className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm hover:scale-105 transition"
                   />
+                  </Link>
                   <div className="ml-4">
                     <h2 className="text-xl font-semibold text-white">{subscribedChannel[idx].fullname}</h2>
                     <p className="text-sm text-gray-400">@{subscribedChannel[idx].username}</p>

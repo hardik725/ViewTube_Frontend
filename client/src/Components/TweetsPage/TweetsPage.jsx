@@ -216,10 +216,12 @@ const getTweet = async (userId) => {
               alt={t.username}
               className="w-10 h-10 rounded-full object-cover border border-gray-700"
             />
+            <Link to={`/user/channelPage/${t.username}`}>
             <div className="flex flex-col">
               <span className="text-white font-semibold text-sm">{t.fullname}</span>
               <span className="text-gray-400 text-xs">@{t.username} • {moment(t.createdAt).fromNow()}</span>
             </div>
+            </Link>
           </div>
 
           {/* Tweet Content */}

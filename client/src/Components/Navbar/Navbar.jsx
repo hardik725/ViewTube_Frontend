@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes, faBars, faBell } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../AuthProvider/AuthProvider';
 import { io } from 'socket.io-client';
 
@@ -220,16 +220,20 @@ return (
         </td>
         <td className="px-1 py-2 border-b border-gray-700">
           {note.purpose === "subscription" && (
+            <Link to={`/user/channelPage/${note.senderUsername}`}>
             <div>
               <span className="font-medium">{note.senderUsername},</span> has
               subscribed to your channel
             </div>
+            </Link>
           )}
           {note.purpose === "message" && (
+            <Link to={`/user/chatbox/${note.senderId}`}>
             <div>
               <span className="font-medium">{note.senderUsername},</span> has
               messaged you.
             </div>
+            </Link>
           )}
         </td>
         <td className="px-1 py-2 border-b border-gray-700">
@@ -339,16 +343,20 @@ return (
         </td>
         <td className="px-1 py-2 border-b border-gray-700">
           {note.purpose === "subscription" && (
+            <Link to={`/user/channelPage/${note.senderUsername}`}>
             <div>
               <span className="font-medium">{note.senderUsername},</span> has
               subscribed to your channel
             </div>
+            </Link>
           )}
           {note.purpose === "message" && (
+            <Link to={`/user/chatbox/${note.senderId}`}>
             <div>
               <span className="font-medium">{note.senderUsername},</span> has
               messaged you.
             </div>
+            </Link>
           )}
         </td>
         <td className="px-1 py-2 border-b border-gray-700">

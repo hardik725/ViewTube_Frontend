@@ -42,7 +42,7 @@ const getNotification = async (userId) => {
 
     if (response.ok) {
       const output = await response.json();
-      setNotification(output.data);
+      setNotification(output.data.reverse());
 
       // Filter unread notifications and update the unread state
       const unread = output.data.filter(notification => notification.read === false);

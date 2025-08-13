@@ -1,12 +1,18 @@
 // src/context/AuthContext.js
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [showSideBar, setShowSideBar] = useState(false);
-
+  const [user, setUser] = useState(null);
   const toggleSideBar = () => setShowSideBar(prev => !prev);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
   const logout = async () => {
     try{
     const response = await fetch(`https://viewtube-xam7.onrender.com/api/v1/users/logout`,{
@@ -18,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     });
     if (response.ok){
         localStorage.removeItem('user');
-        window.location.href = '/'; // Or use navigate if inside component
+        window.location.href = '/';
     }else{
         alert("Unable to logout");
     }
@@ -34,7 +40,9 @@ export const AuthProvider = ({ children }) => {
         logout,
         showSideBar,
         setShowSideBar,
-        toggleSideBar
+        toggleSideBar,
+        user,
+        setUser
       }}
     >
       {children}

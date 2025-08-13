@@ -3,7 +3,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState, useEffect } from 'react'
+import { AuthContext } from '../Components/AuthProvider/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 
 const LoginPage = () => {
     const [username,setUsername] = useState('');
@@ -11,6 +13,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [signIn, setSignIn] = useState(false);
+    const { login } = useContext(AuthContext);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -42,6 +45,7 @@ const LoginPage = () => {
         if(response.ok){
             const output = await response.json();
             localStorage.setItem('user',JSON.stringify(output.data.user));
+            login(output.data.user);
             alert("User logged In Successfully!");
             navigate('/user', {replace: true});
             setSignIn(false);

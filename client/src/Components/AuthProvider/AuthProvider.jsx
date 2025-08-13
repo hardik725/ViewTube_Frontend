@@ -7,10 +7,13 @@ export const AuthProvider = ({ children }) => {
   const [showSideBar, setShowSideBar] = useState(false);
   const [user, setUser] = useState(null);
   const toggleSideBar = () => setShowSideBar(prev => !prev);
+  const login = (userData) => {
+    setUser(userData);
+  };  
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(storedUser);
+      setUser(JSON.parse(storedUser));
     }
   }, []);
   const logout = async () => {
@@ -23,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         },
     });
     if (response.ok){
+        setUser(null);
         localStorage.removeItem('user');
         window.location.href = '/';
     }else{
@@ -42,7 +46,7 @@ export const AuthProvider = ({ children }) => {
         setShowSideBar,
         toggleSideBar,
         user,
-        setUser
+        login
       }}
     >
       {children}

@@ -28,22 +28,30 @@ const router = createBrowserRouter(
     <Route path="/" element={<LoginPage/>}>
     </Route>
     <Route path="/signUp" element={<SignUp/>}></Route>
-    <Route path="/user" element={<Layout/>}>
-          <Route path="" element={<Home/>}></Route>
-        <Route path="subscription" element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
-        <Route path="userProfile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-        <Route path="videoPlayer/:videoId" element={<ProtectedRoute><VideoPlayer /></ProtectedRoute>} />
-        <Route path="history" element={<ProtectedRoute><WatchHistory /></ProtectedRoute>} />
-        <Route path="myVideos" element={<ProtectedRoute><UserVideos /></ProtectedRoute>} />
-        <Route path="channelPage/:channelName" element={<ProtectedRoute><ChannelPage /></ProtectedRoute>} />
-        <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-        <Route path="likedVideos" element={<ProtectedRoute><LikedVideos /></ProtectedRoute>} />
-        <Route path="playlist" element={<ProtectedRoute><UserPlaylist /></ProtectedRoute>} />
-        <Route path="playlistBox/:playlistId" element={<ProtectedRoute><PlaylistBox /></ProtectedRoute>} />
-        <Route path="tweetPage" element={<ProtectedRoute><TweetsPage /></ProtectedRoute>} />
-        <Route path="userTweets" element={<ProtectedRoute><UserTweet /></ProtectedRoute>} />
-        <Route path="chatbox/:channelId" element={<ProtectedRoute><ChatBox /></ProtectedRoute>} />
-    </Route>
+<Route
+  path="/user"
+  element={
+    <ProtectedRoute>
+      <Layout />
+    </ProtectedRoute>
+  }
+>
+  <Route path="" element={<Home />} />
+  <Route path="subscription" element={<Subscription />} />
+  <Route path="userProfile" element={<UserProfile />} />
+  <Route path="videoPlayer/:videoId" element={<VideoPlayer />} />
+  <Route path="history" element={<WatchHistory />} />
+  <Route path="myVideos" element={<UserVideos />} />
+  <Route path="channelPage/:channelName" element={<ChannelPage />} />
+  <Route path="settings" element={<Settings />} />
+  <Route path="likedVideos" element={<LikedVideos />} />
+  <Route path="playlist" element={<UserPlaylist />} />
+  <Route path="playlistBox/:playlistId" element={<PlaylistBox />} />
+  <Route path="tweetPage" element={<TweetsPage />} />
+  <Route path="userTweets" element={<UserTweet />} />
+  <Route path="chatbox/:channelId" element={<ChatBox />} />
+</Route>
+
     </>   
   )
 )
